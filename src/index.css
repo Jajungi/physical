@@ -1,0 +1,53 @@
+@import 'tailwindcss';
+@import 'katex/dist/katex.min.css';
+
+@theme {
+  --font-sans: 'Pretendard Variable', 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --font-serif: 'Noto Serif KR', 'Georgia', serif;
+  --color-accent: #e85d75;
+  --color-accent-soft: #fdf2f4;
+  --color-ink: #1a1a1f;
+  --color-muted: #6b7280;
+  --color-surface: #fafafa;
+  --color-border: #e8e8ec;
+  --header-height: 100px;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-[var(--color-surface)] text-[var(--color-ink)] font-sans antialiased;
+  }
+
+  ::selection {
+    @apply bg-[var(--color-accent)]/20;
+  }
+}
+
+@layer utilities {
+  .scroll-target {
+    scroll-margin-top: calc(var(--header-height) + 52px);
+  }
+  .wiki-prose h3 {
+    @apply mt-10 mb-4 text-xl font-semibold tracking-tight;
+  }
+
+  .wiki-prose p {
+    @apply mb-4 leading-relaxed text-[var(--color-muted)];
+  }
+
+  .wiki-prose ul {
+    @apply mb-4 list-disc space-y-2 pl-5 text-[var(--color-muted)];
+  }
+
+  .wiki-prose li {
+    @apply leading-relaxed;
+  }
+
+  .touch-manipulation {
+    touch-action: manipulation;
+  }
+}
