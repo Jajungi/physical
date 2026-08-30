@@ -40,8 +40,9 @@ base: process.env.GITHUB_PAGES === 'true' ? '/<저장소명>/' : '/',
 ### 3. GitHub Pages 활성화
 
 1. 저장소 → **Settings** → **Pages**
-2. **Source**: GitHub Actions
-3. `main` 브랜치에 push하면 자동 배포됩니다.
+2. **Source**: **Deploy from a branch**
+3. **Branch**: `gh-pages` / **/(root)**
+4. `main`에 push하면 Actions가 `dist`를 `gh-pages`에 올립니다.
 
 **배포 URL:** https://jajungi.github.io/physical/
 
