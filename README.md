@@ -37,15 +37,13 @@ git push -u origin main
 base: process.env.GITHUB_PAGES === 'true' ? '/<저장소명>/' : '/',
 ```
 
-예: 저장소가 `physical`이면 `/physical/`
-
-배포 URL: `https://jajungi.github.io/physical/`
+### 3. GitHub Pages 활성화
 
 1. 저장소 → **Settings** → **Pages**
 2. **Source**: GitHub Actions
 3. `main` 브랜치에 push하면 자동 배포됩니다.
 
-배포 URL: `https://<사용자명>.github.io/<저장소명>/`
+**배포 URL:** https://jajungi.github.io/physical/
 
 ## 기술 스택
 
