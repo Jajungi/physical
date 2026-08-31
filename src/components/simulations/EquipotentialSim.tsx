@@ -32,6 +32,7 @@ import {
   chainNearestPoints,
   normToMm,
   potential,
+  attachPointToPaths,
   sampleEquipotentialPaths,
   snapToEquipotential,
 } from './potentialField'
@@ -63,7 +64,6 @@ export function EquipotentialSim() {
   const [showGuide, setShowGuide] = useState(true)
   const [guidedStep, setGuidedStep] = useState(0)
   const [flash, setFlash] = useState(false)
-  const [fixV, setFixV] = useState(2)
   const [fixSpacingMm, setFixSpacingMm] = useState(12)
   const [lineCount, setLineCount] = useState(0)
 
@@ -85,12 +85,11 @@ export function EquipotentialSim() {
 
   const recordPoint = useCallback(() => {
     if (!isBalanced) return
-    const v = measureMode === 'fix' ? fixV : vFixed
-    setRecorded((prev) => [...prev, { x: mobile.x, y: mobile.y, v }])
+    setRecorded((prev) => [...prev, { x: mobile.x, y: mobile.y, v: vFixed }])
     setFlash(true)
     setTimeout(() => setFlash(false), 400)
     if (guidedStep < 2) setGuidedStep(2)
-  }, [isBalanced, measureMode, mobile, vFixed, guidedStep])
+  }, [isBalanced, mobile, vFixed, guidedStep])
 
   const finishLine = useCallback(() => {
     if (recorded.length < 3) return
@@ -100,14 +99,17 @@ export function EquipotentialSim() {
   }, [recorded.length])
 
   const runFixScan = useCallback(() => {
-    const paths = sampleEquipotentialPaths(electrode, fixV, voltage, fixSpacingMm)
-    const pts = paths.flatMap((path, line) => path.map((p) => ({ ...p, v: fixV, line })))
+    const paths = attachPointToPaths(
+      sampleEquipotentialPaths(electrode, vFixed, voltage, fixSpacingMm),
+      fixed,
+    )
+    const pts = paths.flatMap((path, line) => path.map((p) => ({ ...p, v: vFixed, line })))
     setRecorded(pts)
     if (pts.length >= 2) {
       setLineCount((c) => c + 1)
       setGuidedStep(3)
     }
-  }, [electrode, voltage, fixV, fixSpacingMm])
+  }, [electrode, voltage, vFixed, fixed, fixSpacingMm])
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -130,8 +132,7 @@ export function EquipotentialSim() {
     if (showField) drawEFieldGrid(ctx, electrode, voltage, PAD, W, H)
 
     if (showGuide) {
-      const guideV = measureMode === 'fix' ? fixV : vFixed
-      drawEquipotentialContour(ctx, electrode, guideV, voltage, PAD, W, H, 'rgba(34,197,94,0.55)', true)
+      drawEquipotentialContour(ctx, electrode, vFixed, voltage, PAD, W, H, 'rgba(34,197,94,0.55)', true)
     }
 
     drawElectrodes(ctx, electrode, PAD, W, H, voltage)
@@ -214,7 +215,7 @@ export function EquipotentialSim() {
     ctx.fillStyle = '#475569'
     ctx.font = '9px system-ui, sans-serif'
     ctx.fillText('SSI Equipotential Line — 고정봉 A · 이동봉 B → 검류계', PAD + 8, 16)
-  }, [electrode, voltage, fixed, mobile, recorded, showField, showGuide, measureMode, vFixed, fixV, field, isBalanced, flash])
+  }, [electrode, voltage, fixed, mobile, recorded, showField, showGuide, vFixed, field, isBalanced, flash])
 
   useEffect(() => { draw() }, [draw])
 
@@ -275,14 +276,13 @@ export function EquipotentialSim() {
       <SimHint>
         {measureMode === 'manual' && 'B 검침봉을 드래그해 검류계=0인 점을 직접 찾으세요.'}
         {measureMode === 'match' && 'B를 놓으면 같은 전위(녹색 점선)에 자동 맞춤됩니다.'}
-        {measureMode === 'fix' && '목표 전위의 등전위선 위에서만 점을 찍습니다. 점 간격만 바꾸면 됩니다.'}
+        {measureMode === 'fix' && '고정봉 A를 지나는 등전위선만 찾습니다. A를 옮긴 뒤 다시 스캔하세요.'}
       </SimHint>
       {measureMode === 'fix' ? (
         <>
-          <SimSlider label="등전위 전위" value={fixV} min={0.5} max={voltage - 0.5} step={0.2} unit=" V" onChange={setFixV} />
           <SimSlider label="기록 점 간격" value={fixSpacingMm} min={8} max={20} step={1} unit=" mm" onChange={setFixSpacingMm} />
           <button type="button" onClick={runFixScan} className="w-full rounded-lg bg-[var(--color-accent)] py-3 text-sm font-medium text-white touch-manipulation">
-            등전위선 자동 스캔 ({fixV.toFixed(1)} V)
+            A를 지나는 등전위선 자동 스캔 ({vFixed.toFixed(2)} V)
           </button>
         </>
       ) : (

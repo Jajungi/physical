@@ -162,6 +162,33 @@ export function sampleEquipotentialPaths(
     .filter((path) => path.length >= 2)
 }
 
+/** Put the fixed probe on the nearest sampled path so the line goes through A. */
+export function attachPointToPaths(
+  paths: { x: number; y: number }[][],
+  pt: { x: number; y: number },
+): { x: number; y: number }[][] {
+  if (paths.length === 0) return [[{ ...pt }]]
+  let bestPath = 0
+  let bestI = 0
+  let bestD = Infinity
+  paths.forEach((path, pi) => {
+    path.forEach((p, i) => {
+      const d = distNorm(p.x, p.y, pt.x, pt.y)
+      if (d < bestD) {
+        bestD = d
+        bestPath = pi
+        bestI = i
+      }
+    })
+  })
+  return paths.map((path, pi) => {
+    if (pi !== bestPath) return path
+    const next = [...path]
+    next[bestI] = { x: pt.x, y: pt.y }
+    return next
+  })
+}
+
 /** Flattened samples on the exact contour — no voltage-tolerance band. */
 export function traceEquipotential(
   type: ElectrodeType,
