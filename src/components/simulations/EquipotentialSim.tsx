@@ -24,6 +24,11 @@ import {
   drawLabGrid,
   drawProbe,
   fieldAt,
+  CANVAS_H,
+  CANVAS_W,
+  TANK_COLS,
+  TANK_PAD,
+  TANK_ROWS,
   chainNearestPoints,
   normToMm,
   potential,
@@ -35,11 +40,11 @@ type MeasureMode = 'manual' | 'match' | 'fix'
 interface Point { x: number; y: number }
 interface RecordedPoint extends Point { v: number }
 
-const W = 600
-const H = 420
-const PAD = 40
-const COLS = 40
-const ROWS = 27
+const W = CANVAS_W
+const H = CANVAS_H
+const PAD = TANK_PAD
+const COLS = TANK_COLS
+const ROWS = TANK_ROWS
 
 function toCanvas(px: number, py: number) {
   return { cx: PAD + px * (W - 2 * PAD), cy: PAD + py * (H - 2 * PAD) }
@@ -156,7 +161,7 @@ export function EquipotentialSim() {
     }
 
     const mc = toCanvas(mobile.x, mobile.y)
-    if (isBalanced && field.E > 0.3) {
+    if (isBalanced && field.E > 0.8) {
       const angle = Math.atan2(field.Ey, field.Ex)
       const len = 32
       ctx.strokeStyle = '#f59e0b'
