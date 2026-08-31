@@ -203,11 +203,13 @@ export function EquipotentialSim() {
 
   useEffect(() => { draw() }, [draw])
 
-  const getProbe = (cx: number, cy: number) => {
+  const getProbe = (cx: number, cy: number, displayW: number) => {
     const fc = toCanvas(fixed.x, fixed.y)
     const mc = toCanvas(mobile.x, mobile.y)
-    if (Math.hypot(cx - fc.cx, cy - fc.cy) < 26) return 'fixed' as const
-    if (Math.hypot(cx - mc.cx, cy - mc.cy) < 26) return 'mobile' as const
+    // Keep a ~44px touch target after the canvas is scaled down to the screen width.
+    const hitR = Math.max(26, (44 / Math.max(displayW, 1)) * W)
+    if (Math.hypot(cx - fc.cx, cy - fc.cy) < hitR) return 'fixed' as const
+    if (Math.hypot(cx - mc.cx, cy - mc.cy) < hitR) return 'mobile' as const
     return null
   }
 
@@ -215,7 +217,7 @@ export function EquipotentialSim() {
     const rect = canvasRef.current!.getBoundingClientRect()
     const cx = ((e.clientX - rect.left) / rect.width) * W
     const cy = ((e.clientY - rect.top) / rect.height) * H
-    const probe = getProbe(cx, cy)
+    const probe = getProbe(cx, cy, rect.width)
     if (probe) {
       setDragging(probe)
       if (probe === 'fixed' && guidedStep < 1) setGuidedStep(1)
@@ -333,7 +335,7 @@ export function EquipotentialSim() {
                 ref={canvasRef}
                 width={W}
                 height={H}
-                className="w-full touch-none"
+                className="block h-auto w-full max-w-full touch-none"
                 onPointerDown={onPointerDown}
                 onPointerMove={onPointerMove}
                 onPointerUp={onPointerUp}

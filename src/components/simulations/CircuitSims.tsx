@@ -1067,7 +1067,7 @@ export function RLCSim() {
                 <canvas ref={waveRef} width={360} height={140} className="w-full" />
               </div>
               <div className={view === 'lissajous' ? '' : 'hidden'}>
-                <canvas ref={lissRef} width={160} height={160} className="mx-auto max-w-[200px]" />
+                <canvas ref={lissRef} width={160} height={160} className="mx-auto block h-auto w-full max-w-[200px]" />
               </div>
             </OscilloscopeScreen>
             <SimApparatusCaption structure="교류 전원 Vs — 직렬 R-L-C. 오실로스코프 CH1을 R 양단(VR)에 연결. f를 스윕해 VR 최대(공진)를 찾고 XY 모드로 위상 확인.">

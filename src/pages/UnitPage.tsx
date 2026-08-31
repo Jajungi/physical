@@ -202,7 +202,7 @@ export function UnitPage() {
 
             {/* Simulation */}
             {unit.id !== 10 && (
-              <section id="simulation" className="scroll-target mt-20">
+              <section id="simulation" className="scroll-target mt-20 min-w-0">
                 <h2 className="mb-2 font-serif text-3xl font-bold tracking-tight">실험 시뮬레이션</h2>
                 <p className="mb-8 text-[var(--color-muted)]">
                   실험 전·중에 결과를 미리 보거나 측정값을 검증할 수 있는 인터랙티브 시뮬레이션입니다.

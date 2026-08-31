@@ -13,8 +13,8 @@ export function SimShell({ title, description, children, hint, steps, currentSte
   const [stepsOpen, setStepsOpen] = useState(false)
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-[var(--color-border)] bg-white shadow-sm">
-      <div className="border-b border-[var(--color-border)] bg-gradient-to-r from-[var(--color-surface)] to-white px-4 py-4 sm:px-5">
+    <div className="min-w-0 overflow-hidden rounded-2xl border border-[var(--color-border)] bg-white shadow-sm">
+      <div className="border-b border-[var(--color-border)] bg-gradient-to-r from-[var(--color-surface)] to-white px-3 py-4 sm:px-5">
         <div className="flex items-start gap-3">
           <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[var(--color-accent)] text-xs font-bold text-white">
             LAB
@@ -109,7 +109,7 @@ export function SimShell({ title, description, children, hint, steps, currentSte
         </>
       )}
 
-      <div className="bg-[#f0f4f8] p-4 sm:p-5">{children}</div>
+      <div className="min-w-0 bg-[#f0f4f8] p-3 sm:p-5">{children}</div>
 
       {hint && (
         <div className="border-t border-[var(--color-border)] bg-[var(--color-accent-soft)] px-4 py-3 sm:px-5">
@@ -178,10 +178,10 @@ export function SimSlider({
   }
 
   return (
-    <label className="block rounded-xl border border-[var(--color-border)] bg-white px-4 py-3 touch-manipulation">
+    <label className="block rounded-xl border border-[var(--color-border)] bg-white px-3 py-3 touch-manipulation sm:px-4">
       <div className="mb-3 flex items-center justify-between gap-2">
-        <span className="text-sm font-medium">{label}</span>
-        <div className="flex items-center gap-1">
+        <span className="min-w-0 text-sm font-medium">{label}</span>
+        <div className="flex shrink-0 items-center gap-1">
           <input
             type="number"
             inputMode="decimal"
@@ -268,7 +268,7 @@ export function SimSelect<T extends string>({
 
 export function LabPanel({ title, children }: { title: string; children: ReactNode }) {
   return (
-    <div className="overflow-hidden rounded-xl border-2 border-slate-700 bg-slate-800 shadow-lg">
+    <div className="min-w-0 overflow-hidden rounded-xl border-2 border-slate-700 bg-slate-800 shadow-lg">
       <div className="border-b border-slate-600 bg-slate-900 px-3 py-2">
         <p className="text-center text-xs font-medium tracking-widest text-slate-400 uppercase">{title}</p>
       </div>
@@ -357,18 +357,20 @@ export function OscilloscopeScreen({
   label?: string
 }) {
   return (
-    <div className="overflow-hidden rounded-lg border-2 border-slate-600 bg-[#0a0f0a]">
+    <div className="min-w-0 overflow-hidden rounded-lg border-2 border-slate-600 bg-[#0a0f0a]">
       {label && (
         <div className="border-b border-slate-700 bg-slate-800 px-2 py-1.5 text-center text-[10px] text-slate-400 sm:text-xs">
           {label}
         </div>
       )}
-      <div className="relative">{children}</div>
+      <div className="relative min-w-0 [&_canvas]:block [&_canvas]:h-auto [&_canvas]:w-full [&_canvas]:max-w-full">
+        {children}
+      </div>
     </div>
   )
 }
 
-/** Canvas wrapper — responsive width, touch-friendly */
+/** Canvas wrapper — always fits the screen width (no sideways clip/scroll). */
 export function SimCanvas({
   children,
   label,
@@ -379,9 +381,11 @@ export function SimCanvas({
   className?: string
 }) {
   return (
-    <div className={`rounded-xl border-2 border-slate-300 bg-white p-2 sm:p-3 ${className}`}>
+    <div className={`min-w-0 overflow-hidden rounded-xl border-2 border-slate-300 bg-white p-1.5 sm:p-3 ${className}`}>
       {label && <p className="mb-2 text-center text-xs text-slate-500">{label}</p>}
-      <div className="overflow-x-auto">{children}</div>
+      <div className="min-w-0 w-full [&_canvas]:block [&_canvas]:h-auto [&_canvas]:w-full [&_canvas]:max-w-full">
+        {children}
+      </div>
     </div>
   )
 }

@@ -58,7 +58,7 @@ export function SimWorkbench({
   const setup = setupControls
 
   return (
-    <div className="flex flex-col gap-0">
+    <div className="flex min-w-0 flex-col gap-0">
       {figureRef && (
         <div className="mb-3 flex items-center gap-2">
           <span className="rounded-md bg-slate-200 px-2 py-0.5 text-[10px] font-semibold tracking-wide text-slate-600 uppercase">
@@ -74,7 +74,7 @@ export function SimWorkbench({
       )}
 
       <div className="flex flex-col gap-3">
-        <div className="min-h-[32vh]">{bench}</div>
+        <div className="min-h-[32vh] min-w-0">{bench}</div>
 
         {live && <LivePanel>{live}</LivePanel>}
 

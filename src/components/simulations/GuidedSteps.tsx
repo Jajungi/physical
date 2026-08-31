@@ -24,11 +24,13 @@ export function GuidedSteps({ steps, currentStep, onStepChange }: GuidedStepsPro
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
-        className="flex w-full items-center justify-between px-4 py-3 text-left text-sm lg:pointer-events-none"
+        className="flex w-full items-start justify-between gap-2 px-3 py-3 text-left text-sm sm:px-4 lg:pointer-events-none"
       >
-        <span className="font-medium">
+        <span className="min-w-0 font-medium">
           실험 단계 {currentStep + 1}/{steps.length}
-          <span className="ml-2 font-normal text-slate-400">— {steps[currentStep]?.label}</span>
+          <span className="mt-0.5 block font-normal text-slate-400 sm:mt-0 sm:ml-2 sm:inline">
+            — {steps[currentStep]?.label}
+          </span>
         </span>
         <span className="text-slate-400 lg:hidden">{open ? '▲' : '▼'}</span>
       </button>

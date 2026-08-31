@@ -1,4 +1,4 @@
-/** Scale canvas for Retina/HiDPI — call once per frame before drawing. */
+/** Scale canvas for Retina/HiDPI and fit the parent width (no fixed CSS px that overflow on mobile). */
 export function prepareCanvas(
   canvas: HTMLCanvasElement,
   logicalW: number,
@@ -12,9 +12,13 @@ export function prepareCanvas(
   if (canvas.width !== pw || canvas.height !== ph) {
     canvas.width = pw
     canvas.height = ph
-    canvas.style.width = `${logicalW}px`
-    canvas.style.height = `${logicalH}px`
   }
+  // Always fill the container. Inline pixel sizes used to clip inside overflow-hidden parents.
+  canvas.style.width = '100%'
+  canvas.style.maxWidth = '100%'
+  canvas.style.height = 'auto'
+  canvas.style.aspectRatio = `${logicalW} / ${logicalH}`
+  canvas.style.display = 'block'
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
   ctx.imageSmoothingEnabled = true
   ctx.imageSmoothingQuality = 'high'

@@ -789,13 +789,13 @@ export function MagneticBalanceSim() {
       <p className="text-[11px] leading-relaxed text-slate-600">
         <strong>홈 1~5</strong> = 천칭 팔에 추를 거는 5개 위치. 홈마다 다른 추(0.12~0.24g)로 바꿔가며 같은 실험을 반복합니다.
       </p>
-      <div className="flex gap-1">
+      <div className="grid grid-cols-5 gap-1">
         {BALANCE_NOTCHES.map((preset, idx) => (
           <button
             key={preset.label}
             type="button"
             onClick={() => selectNotch(idx)}
-            className={`flex-1 rounded py-2 text-[10px] leading-tight touch-manipulation ${notch === idx ? 'bg-[var(--color-accent)] text-white' : 'bg-white ring-1 ring-slate-200'}`}
+            className={`min-w-0 rounded py-2 text-[10px] leading-tight touch-manipulation ${notch === idx ? 'bg-[var(--color-accent)] text-white' : 'bg-white ring-1 ring-slate-200'}`}
           >
             {preset.label}
             <span className="block text-[9px] opacity-80">{preset.massG}g</span>
