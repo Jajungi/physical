@@ -20,6 +20,7 @@ export const CANVAS_H = TANK_ROWS * TANK_CELL_PX + 2 * TANK_PAD
 /** Circular ring electrode radius, as a fraction of tank width (40 mm). */
 export const RING_R = 40 / TANK_W_MM
 const TANK_W_M = TANK_W_MM / 1000
+const TANK_H_M = TANK_H_MM / 1000
 
 /** Distance in tank-width units (1 = 400 mm). y is scaled so circles stay circular. */
 export function distNorm(x1: number, y1: number, x2: number, y2: number) {
@@ -86,26 +87,44 @@ export function fieldAt(
   return { Ex, Ey, E: Math.hypot(Ex, Ey) }
 }
 
-/** Find nearest point on equipotential contour V = targetV. */
+function clampNorm(v: number) {
+  return Math.max(0.06, Math.min(0.94, v))
+}
+
+/** Walk onto the V = targetV contour (gradient step, then a short local refine). */
 export function snapToEquipotential(
   type: ElectrodeType,
   targetV: number,
   from: { x: number; y: number },
   V0: number,
-  radius = 0.18,
 ): { x: number; y: number } {
-  let best = from
-  let bestScore = Infinity
-  const tol = V0 * 0.012
-  const step = 0.006
-  for (let dx = -radius; dx <= radius; dx += step) {
-    for (let dy = -radius; dy <= radius; dy += step) {
-      const px = Math.max(0.06, Math.min(0.94, from.x + dx))
-      const py = Math.max(0.06, Math.min(0.94, from.y + dy))
+  let x = from.x
+  let y = from.y
+  for (let i = 0; i < 48; i++) {
+    const V = potential(type, x, y, V0)
+    const err = targetV - V
+    if (Math.abs(err) < V0 * 0.002) break
+    const { Ex, Ey, E } = fieldAt(type, x, y, V0)
+    if (E < 0.4) break
+    const scale = -err / (E * E)
+    const dlx = Ex * scale
+    const dly = Ey * scale
+    const dl = Math.hypot(dlx, dly)
+    const k = dl > 0.02 ? 0.02 / dl : 1
+    x = clampNorm(x + (dlx * k) / TANK_W_M)
+    y = clampNorm(y + (dly * k) / TANK_H_M)
+  }
+
+  let best = { x, y }
+  let bestDv = Math.abs(potential(type, x, y, V0) - targetV)
+  const step = 0.004
+  for (let dx = -0.03; dx <= 0.03; dx += step) {
+    for (let dy = -0.03; dy <= 0.03; dy += step) {
+      const px = clampNorm(x + dx)
+      const py = clampNorm(y + dy)
       const dv = Math.abs(potential(type, px, py, V0) - targetV)
-      const dist = distNorm(0, 0, dx, dy)
-      if (dv < tol && dist < bestScore) {
-        bestScore = dist
+      if (dv < bestDv) {
+        bestDv = dv
         best = { x: px, y: py }
       }
     }
@@ -113,75 +132,45 @@ export function snapToEquipotential(
   return best
 }
 
-/** Sample points along equipotential contour V = targetV.
- *  Horizontal + vertical grid scans collect ALL crossings (not just the first per row).
- *  tolFrac widens the band when crossings are sparse (Fix mode tolerance). */
+function resamplePath(path: { x: number; y: number }[], step: number) {
+  if (path.length === 0) return []
+  const out = [path[0]]
+  let acc = 0
+  for (let i = 1; i < path.length; i++) {
+    acc += distNorm(path[i - 1].x, path[i - 1].y, path[i].x, path[i].y)
+    if (acc >= step) {
+      out.push(path[i])
+      acc = 0
+    }
+  }
+  const last = path[path.length - 1]
+  const prev = out[out.length - 1]
+  if (distNorm(prev.x, prev.y, last.x, last.y) > step * 0.35) out.push(last)
+  return out
+}
+
+/** Ordered polylines on V = targetV (marching squares). spacingMm = 점 간격. */
+export function sampleEquipotentialPaths(
+  type: ElectrodeType,
+  targetV: number,
+  V0: number,
+  spacingMm = 12,
+): { x: number; y: number }[][] {
+  const step = spacingMm / TANK_W_MM
+  return extractContourPaths(type, targetV, V0, 100)
+    .map((path) => resamplePath(path, step))
+    .filter((path) => path.length >= 2)
+}
+
+/** Flattened samples on the exact contour — no voltage-tolerance band. */
 export function traceEquipotential(
   type: ElectrodeType,
   targetV: number,
   V0: number,
-  res = 100,
-  tolFrac = 0.08,
+  _res = 100,
+  spacingMm = 12,
 ): { x: number; y: number }[] {
-  const tol = V0 * tolFrac
-  const pts: { x: number; y: number }[] = []
-  const seen = new Set<string>()
-
-  const add = (x: number, y: number) => {
-    const key = `${Math.round(x * 600)},${Math.round(y * 600)}`
-    if (!seen.has(key)) {
-      seen.add(key)
-      pts.push({ x, y })
-    }
-  }
-
-  const cross = (px1: number, py1: number, px2: number, py2: number) => {
-    const v1 = potential(type, px1, py1, V0) - targetV
-    const v2 = potential(type, px2, py2, V0) - targetV
-    if (v1 * v2 <= 0 && Math.abs(v1 - v2) > 1e-12) {
-      const t = Math.abs(v1) / (Math.abs(v1) + Math.abs(v2))
-      add(px1 + t * (px2 - px1), py1 + t * (py2 - py1))
-    }
-  }
-
-  // Every row: collect ALL x-crossings (fixes "half contour" on closed curves)
-  for (let j = 0; j <= res; j++) {
-    const py = 0.06 + (j / res) * 0.88
-    for (let i = 0; i < res; i++) {
-      cross(
-        0.06 + (i / res) * 0.88,
-        py,
-        0.06 + ((i + 1) / res) * 0.88,
-        py,
-      )
-    }
-  }
-
-  // Every column: catches near-horizontal segments
-  for (let i = 0; i <= res; i++) {
-    const px = 0.06 + (i / res) * 0.88
-    for (let j = 0; j < res; j++) {
-      cross(
-        px,
-        0.06 + (j / res) * 0.88,
-        px,
-        0.06 + ((j + 1) / res) * 0.88,
-      )
-    }
-  }
-
-  // Tolerance band — fills gaps when contour is thin or tilted
-  if (pts.length < res * 0.4) {
-    for (let j = 0; j <= res; j++) {
-      for (let i = 0; i <= res; i++) {
-        const px = 0.06 + (i / res) * 0.88
-        const py = 0.06 + (j / res) * 0.88
-        if (Math.abs(potential(type, px, py, V0) - targetV) < tol) add(px, py)
-      }
-    }
-  }
-
-  return pts
+  return sampleEquipotentialPaths(type, targetV, V0, spacingMm).flat()
 }
 
 /** Marching-squares contour extraction — stable closed/open equipotential paths. */
@@ -210,7 +199,7 @@ export function extractContourPaths(
     ax: number, ay: number, av: number,
     bx: number, by: number, bv: number,
   ): { x: number; y: number } => {
-    const t = (targetV - av) / (bv - av)
+    const t = Math.abs(bv - av) < 1e-12 ? 0.5 : (targetV - av) / (bv - av)
     return { x: ax + t * (bx - ax), y: ay + t * (by - ay) }
   }
 

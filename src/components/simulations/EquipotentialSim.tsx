@@ -32,13 +32,13 @@ import {
   chainNearestPoints,
   normToMm,
   potential,
+  sampleEquipotentialPaths,
   snapToEquipotential,
-  traceEquipotential,
 } from './potentialField'
 
 type MeasureMode = 'manual' | 'match' | 'fix'
 interface Point { x: number; y: number }
-interface RecordedPoint extends Point { v: number }
+interface RecordedPoint extends Point { v: number; line?: number }
 
 const W = CANVAS_W
 const H = CANVAS_H
@@ -64,7 +64,7 @@ export function EquipotentialSim() {
   const [guidedStep, setGuidedStep] = useState(0)
   const [flash, setFlash] = useState(false)
   const [fixV, setFixV] = useState(2)
-  const [fixTol, setFixTol] = useState(0.1)
+  const [fixSpacingMm, setFixSpacingMm] = useState(12)
   const [lineCount, setLineCount] = useState(0)
 
   const vFixed = potential(electrode, fixed.x, fixed.y, voltage)
@@ -100,14 +100,14 @@ export function EquipotentialSim() {
   }, [recorded.length])
 
   const runFixScan = useCallback(() => {
-    const pts = traceEquipotential(electrode, fixV, voltage, 120, fixTol).map((p) => ({
-      ...p,
-      v: fixV,
-    }))
+    const paths = sampleEquipotentialPaths(electrode, fixV, voltage, fixSpacingMm)
+    const pts = paths.flatMap((path, line) => path.map((p) => ({ ...p, v: fixV, line })))
     setRecorded(pts)
-    setLineCount((c) => c + 1)
-    setGuidedStep(3)
-  }, [electrode, voltage, fixV, fixTol])
+    if (pts.length >= 2) {
+      setLineCount((c) => c + 1)
+      setGuidedStep(3)
+    }
+  }, [electrode, voltage, fixV, fixSpacingMm])
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -129,14 +129,24 @@ export function EquipotentialSim() {
 
     if (showField) drawEFieldGrid(ctx, electrode, voltage, PAD, W, H)
 
-    if (showGuide && measureMode !== 'fix') {
-      drawEquipotentialContour(ctx, electrode, vFixed, voltage, PAD, W, H, 'rgba(34,197,94,0.55)', true)
+    if (showGuide) {
+      const guideV = measureMode === 'fix' ? fixV : vFixed
+      drawEquipotentialContour(ctx, electrode, guideV, voltage, PAD, W, H, 'rgba(34,197,94,0.55)', true)
     }
 
     drawElectrodes(ctx, electrode, PAD, W, H, voltage)
 
     if (recorded.length > 0) {
-      const branches = chainNearestPoints(recorded, 0.07)
+      const fromScan = recorded.some((p) => p.line !== undefined)
+      const branches = fromScan
+        ? Object.values(
+            recorded.reduce<Record<number, RecordedPoint[]>>((acc, p) => {
+              const id = p.line ?? 0
+              ;(acc[id] ??= []).push(p)
+              return acc
+            }, {}),
+          )
+        : chainNearestPoints(recorded, 0.07)
       branches.forEach((branch) => {
         ctx.strokeStyle = '#e85d75'
         ctx.lineWidth = 2.5
@@ -204,7 +214,7 @@ export function EquipotentialSim() {
     ctx.fillStyle = '#475569'
     ctx.font = '9px system-ui, sans-serif'
     ctx.fillText('SSI Equipotential Line — 고정봉 A · 이동봉 B → 검류계', PAD + 8, 16)
-  }, [electrode, voltage, fixed, mobile, recorded, showField, showGuide, measureMode, vFixed, field, isBalanced, flash])
+  }, [electrode, voltage, fixed, mobile, recorded, showField, showGuide, measureMode, vFixed, fixV, field, isBalanced, flash])
 
   useEffect(() => { draw() }, [draw])
 
@@ -265,14 +275,14 @@ export function EquipotentialSim() {
       <SimHint>
         {measureMode === 'manual' && 'B 검침봉을 드래그해 검류계=0인 점을 직접 찾으세요.'}
         {measureMode === 'match' && 'B를 놓으면 같은 전위(녹색 점선)에 자동 맞춤됩니다.'}
-        {measureMode === 'fix' && '목표 전위 V를 맞추는 점을 자동으로 찾습니다. 스캔 간격을 넓히면 곡선이 더 잘 잡힙니다.'}
+        {measureMode === 'fix' && '목표 전위의 등전위선 위에서만 점을 찍습니다. 점 간격만 바꾸면 됩니다.'}
       </SimHint>
       {measureMode === 'fix' ? (
         <>
           <SimSlider label="등전위 전위" value={fixV} min={0.5} max={voltage - 0.5} step={0.2} unit=" V" onChange={setFixV} />
-          <SimSlider label="스캔 간격 (허용 오차)" value={fixTol * 100} min={3} max={18} step={1} unit=" %" onChange={(v) => setFixTol(v / 100)} />
+          <SimSlider label="기록 점 간격" value={fixSpacingMm} min={8} max={20} step={1} unit=" mm" onChange={setFixSpacingMm} />
           <button type="button" onClick={runFixScan} className="w-full rounded-lg bg-[var(--color-accent)] py-3 text-sm font-medium text-white touch-manipulation">
-            등전위선 자동 스캔 ({fixV.toFixed(1)}V ±{(fixTol * 100).toFixed(0)}%)
+            등전위선 자동 스캔 ({fixV.toFixed(1)} V)
           </button>
         </>
       ) : (
