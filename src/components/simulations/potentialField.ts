@@ -10,6 +10,21 @@ export const ELECTRODE_LABELS: Record<ElectrodeType, string> = {
 
 export const TANK_W_MM = 400
 export const TANK_H_MM = 270
+export const TANK_COLS = 40
+export const TANK_ROWS = 27
+/** Pixels per 10 mm grid cell — keeps cells square (1.3 px/mm). */
+export const TANK_CELL_PX = 13
+export const TANK_PAD = 40
+export const CANVAS_W = TANK_COLS * TANK_CELL_PX + 2 * TANK_PAD
+export const CANVAS_H = TANK_ROWS * TANK_CELL_PX + 2 * TANK_PAD
+/** Circular ring electrode radius, as a fraction of tank width (40 mm). */
+export const RING_R = 40 / TANK_W_MM
+const TANK_W_M = TANK_W_MM / 1000
+
+/** Distance in tank-width units (1 = 400 mm). y is scaled so circles stay circular. */
+export function distNorm(x1: number, y1: number, x2: number, y2: number) {
+  return Math.hypot((x2 - x1) * TANK_W_MM, (y2 - y1) * TANK_H_MM) / TANK_W_MM
+}
 
 export function mmToNorm(xMm: number, yMm: number) {
   return { x: xMm / TANK_W_MM, y: yMm / TANK_H_MM }
@@ -23,31 +38,32 @@ function clamp(v: number, V0: number) {
   return Math.max(0, Math.min(V0, v))
 }
 
-/** 2D conductive-tank potential (Laplace-like approximations per electrode geometry). */
+/** 2D conductive-tank potential (Laplace-like approximations per electrode geometry).
+ *  (x,y) are 0–1 across the 400×270 mm tank; distances use real mm so circles stay circular. */
 export function potential(type: ElectrodeType, x: number, y: number, V0: number): number {
   switch (type) {
     case 'parallel':
       return clamp(V0 * x, V0)
     case 'two-point': {
-      const r1 = Math.hypot(x - 0.28, y - 0.5) + 0.025
-      const r2 = Math.hypot(x - 0.72, y - 0.5) + 0.025
+      const r1 = distNorm(x, y, 0.28, 0.5) + 0.025
+      const r2 = distNorm(x, y, 0.72, 0.5) + 0.025
       const ln = Math.log(r2 / r1)
       return clamp(V0 * (0.5 + ln / 4.5), V0)
     }
     case 'point-line': {
-      const rPoint = Math.hypot(x - 0.22, y - 0.5) + 0.03
+      const rPoint = distNorm(x, y, 0.22, 0.5) + 0.03
       const distLine = Math.abs(x - 0.78)
       const fromPoint = 0.12 / rPoint
       const fromLine = 1 - distLine * 2.2
       return clamp(V0 * (0.35 * fromLine + 0.65 * fromPoint / (fromPoint + 2)), V0)
     }
     case 'ring': {
-      const r = Math.abs(Math.hypot(x - 0.5, y - 0.5) - 0.2)
+      const r = Math.abs(distNorm(x, y, 0.5, 0.5) - RING_R)
       return clamp(V0 * (1 - r * 2.8), V0)
     }
     case 'dipole': {
-      const r1 = Math.hypot(x - 0.35, y - 0.5) + 0.03
-      const r2 = Math.hypot(x - 0.65, y - 0.5) + 0.03
+      const r1 = distNorm(x, y, 0.35, 0.5) + 0.03
+      const r2 = distNorm(x, y, 0.65, 0.5) + 0.03
       const raw = 1 / r1 - 1 / r2
       return clamp(V0 * (0.5 + raw * 0.06), V0)
     }
@@ -61,11 +77,12 @@ export function fieldAt(
   V0: number,
 ): { Ex: number; Ey: number; E: number } {
   const h = 0.004
+  const hy = h * (TANK_W_MM / TANK_H_MM)
   const V = potential(type, x, y, V0)
   const Vx = potential(type, x + h, y, V0)
-  const Vy = potential(type, x, y + h, V0)
-  const Ex = -(Vx - V) / h
-  const Ey = -(Vy - V) / h
+  const Vy = potential(type, x, y + hy, V0)
+  const Ex = -(Vx - V) / h / TANK_W_M
+  const Ey = -(Vy - V) / h / TANK_W_M
   return { Ex, Ey, E: Math.hypot(Ex, Ey) }
 }
 
@@ -86,7 +103,7 @@ export function snapToEquipotential(
       const px = Math.max(0.06, Math.min(0.94, from.x + dx))
       const py = Math.max(0.06, Math.min(0.94, from.y + dy))
       const dv = Math.abs(potential(type, px, py, V0) - targetV)
-      const dist = dx * dx + dy * dy
+      const dist = distNorm(0, 0, dx, dy)
       if (dv < tol && dist < bestScore) {
         bestScore = dist
         best = { x: px, y: py }
@@ -319,7 +336,7 @@ export function chainNearestPoints(
       let best = -1
       let bestD = Infinity
       for (let i = 0; i < remaining.length; i++) {
-        const d = Math.hypot(remaining[i].x - last.x, remaining[i].y - last.y)
+        const d = distNorm(remaining[i].x, remaining[i].y, last.x, last.y)
         if (d < bestD) {
           bestD = d
           best = i
@@ -416,13 +433,14 @@ export function drawElectrodes(
     cy: pad + ny * (h - 2 * pad),
   })
 
+  const pxPerMm = (w - 2 * pad) / TANK_W_MM
   const drawDisc = (nx: number, ny: number, label: string, color: string, sign: string) => {
     const { cx, cy } = toC(nx, ny)
     ctx.fillStyle = '#e2e8f0'
     ctx.strokeStyle = color
     ctx.lineWidth = 2.5
     ctx.beginPath()
-    ctx.arc(cx, cy, 16, 0, Math.PI * 2)
+    ctx.arc(cx, cy, 12 * pxPerMm, 0, Math.PI * 2)
     ctx.fill()
     ctx.stroke()
     ctx.fillStyle = color
@@ -464,7 +482,7 @@ export function drawElectrodes(
       ctx.strokeStyle = '#1e293b'
       ctx.lineWidth = 5
       ctx.beginPath()
-      ctx.arc(cx, cy, 52, 0, Math.PI * 2)
+      ctx.arc(cx, cy, RING_R * (w - 2 * pad), 0, Math.PI * 2)
       ctx.stroke()
       drawDisc(0.5, 0.5, '고리', '#ef4444', '+')
       break
@@ -564,11 +582,11 @@ export function drawEFieldGrid(
       const px = i / cols
       const py = j / rows
       const { Ex, Ey, E } = fieldAt(type, px, py, V0)
-      if (E < 0.3) continue
+      if (E < 0.8) continue
       const cx = pad + px * (w - 2 * pad)
       const cy = pad + py * (h - 2 * pad)
       const angle = Math.atan2(Ey, Ex)
-      const len = Math.min(14, E * 3)
+      const len = Math.min(14, E * 1.1)
       ctx.strokeStyle = 'rgba(245,158,11,0.55)'
       ctx.lineWidth = 1.2
       ctx.beginPath()
