@@ -42,7 +42,7 @@ export const quizDeep: Record<number, UnitQuizDeep> = {
     concepts: [
       {
         term: '전기장 E',
-        summary: '시험전하 q가 힘 F를 받을 때 그 점의 전기장은 E = F/q.',
+        summary: 'E = F/q · 고전위→저전위 · 등전위 ⟂',
         detail: [
           '전위차가 있는 두 전극 사이에는 항상 전기장이 존재한다. 전기장 속 시험전하가 받는 힘을 전하량으로 나눈 값이 그 점의 E이다.',
           '전위 V가 가장 빠르게 감소하는 방향이 E의 방향이다. 전기력선은 높은 전위에서 낮은 전위로 향하며, 점전하에서는 방사상이다.',
@@ -51,7 +51,7 @@ export const quizDeep: Record<number, UnitQuizDeep> = {
       },
       {
         term: '전위 V',
-        summary: '한 점의 전위는 단위전하당의 위치에너지이다.',
+        summary: '단위전하당 위치에너지 · ≠에너지 자체',
         detail: [
           '전위를 “에너지” 자체와 혼동하지 말 것. 실험서가 강조하는 정의는 단위전하당 위치에너지이다.',
           '전위차와 전기장은 선적분·미분으로 연결된다. V = −∫ E·dl 이고, E = −(dV/dl) n 에서 n은 등전위선(면)에 수직인 단위벡터이다.',
@@ -60,7 +60,7 @@ export const quizDeep: Record<number, UnitQuizDeep> = {
       },
       {
         term: '등전위면·등전위선',
-        summary: '전위가 같은 점들을 3D로 이으면 면, 2D로 이으면 선.',
+        summary: '3D=면 · 2D=선 · 따라가면 일=0',
         detail: [
           '균일장에서는 전기력선(수평)과 등전위선(수직)이 직교한다. 점전하는 방사상 전기력선과 동심구(2D에서는 동심원) 등전위면이다 전형이다.',
           '등전위면을 따라 전하를 옮기는 데 필요한 일은 0이다. 따라서 접선 방향 E 성분은 0이고, E는 등전위면(선)에 수직이다.',
@@ -68,7 +68,7 @@ export const quizDeep: Record<number, UnitQuizDeep> = {
       },
       {
         term: '수조·전도판 원리',
-        summary: '전류 유선 방향 = 전기장, 전류가 안 흐르는 방향 = 등전위선.',
+        summary: '유선=E · 무전류=등전위 · 검류계0=동일선',
         detail: [
           '전도판(또는 전도용액 수조) 양단에 전류가 흐를 때, 판 안 전류의 유선 방향이 전기장 방향이다. 유선에 수직이면 전위차가 없으므로 그 점들을 이으면 등전위선이 된다.',
           '고정 검침봉과 이동 검침봉 사이 검류계가 0이면 두 점의 전위가 같다. 이것이 “같은 등전위선 위의 점”을 찾는 실험 논리이다.',
@@ -76,7 +76,7 @@ export const quizDeep: Record<number, UnitQuizDeep> = {
       },
       {
         term: '측정 모드 Manual / Match / Fix',
-        summary: 'Match·Manual은 전위차 0, Fix는 정해진 전위차 간격의 점을 찍는다.',
+        summary: 'Manual/Match: ΔV=0 · Fix: 0.2~0.5 V',
         detail: [
           'Manual은 검출 전압이 0인 점을, Match는 고정·이동 검침봉 사이 전위차가 0인 점을 찾아 입력한다. 둘 다 “등전위” 개념이다.',
           'Fix는 전위차가 특정값(0.2~0.5 V)이 되면 자동 입력한다. 등전위선 자체를 찾는 모드와, 정해진 전위차 간격의 점을 찍는 모드를 구분할 수 있어야 한다.',
@@ -84,7 +84,7 @@ export const quizDeep: Record<number, UnitQuizDeep> = {
       },
       {
         term: '실험적 E 근사',
-        summary: '인접 등전위선 사이 |E| ≈ |ΔV/Δl|.',
+        summary: '|E|≈|ΔV/Δl| · 촘촘→E↑',
         detail: [
           'n 방향의 미소변위 dl에 대해 E = −(dV/dl) n 이므로, 인접 등전위선의 전위차 ΔV와 수직 간격 Δl로 전기장 세기를 근사한다.',
           '등전위선이 촘촘한 곳은 |Δl|이 작아 E가 크고, 성긴 곳은 E가 약하다.',
@@ -93,7 +93,7 @@ export const quizDeep: Record<number, UnitQuizDeep> = {
       },
       {
         term: '전기력선 밀도·기하 패턴',
-        summary: '전기력선이 촘촘할수록 |E|가 크다. 점전하·균일장·쌍극자 그림을 구분한다.',
+        summary: '선 밀도↑→|E|↑ · 점전하/균일/쌍극자',
         detail: [
           '등전위선 간격이 좁은 곳은 |ΔV/Δl|이 커져 전기장이 강하다. Fix 모드는 등전위가 아니라 정해진 전위차(0.2~0.5 V) 간격의 “등전위선 family”를 더 촘촘히 그릴 때 쓰인다.',
           '점전하: 방사상 전기력선 + 동심 등전위. 균일장: 전기력선 ∥, 등전위선 ⟂. 쌍극자: 곡선 전기력선 + 복잡한 등전위. 퀴즈는 “어느 구성의 스케치인가” 형태가 많다.',
@@ -101,7 +101,7 @@ export const quizDeep: Record<number, UnitQuizDeep> = {
       },
       {
         term: '전위(스칼라) vs 전기장(벡터)',
-        summary: '전위는 스칼라, 전기장은 벡터. 기준점을 바꿔도 E는 동일, V는 상수만큼 이동.',
+        summary: 'V=스칼라 · E=벡터 · 기준점≠E',
         detail: [
           '전위는 임의 기준점(보통 ∞ 또는 접지)에 대한 상대값이다. 전위 기준을 바꿔도 전위차와 전기장은 변하지 않는다.',
           '전기장은 전위의 공간 변화율(그래디언트)로 결정된다. E = −∇V 형태가 미분식 E = −(dV/dl)n의 3D 일반화이다.',
@@ -174,7 +174,7 @@ export const quizDeep: Record<number, UnitQuizDeep> = {
     concepts: [
       {
         term: '옴의 법칙',
-        summary: 'V = IR. R이 V·I에 무관할 때, 즉 V–I가 직선일 때만.',
+        summary: 'V=IR · V–I 직선일 때만',
         detail: [
           '저항에서 자유전자가 원자와 충돌하며 전기에너지가 열에너지로 전환된다. U = QV에서 P = IV가 유도된다.',
           '실험에서는 Vs–I 그래프가 직선인지 확인하고 기울기를 저항으로 읽는다. 기울기 R을 색코드·멀티미터와 비교하는 것이 전형적이다.',
@@ -183,7 +183,7 @@ export const quizDeep: Record<number, UnitQuizDeep> = {
       },
       {
         term: '키르히호프 폐회로·결합점',
-        summary: '닫힌 경로 전위 변화 대수합 = 0, 결합점에서 전류 합 = 0.',
+        summary: '폐회로 ΣΔV=0 · 결합점 ΣI=0',
         detail: [
           '단순 폐회로에서 −IR + ε = 0 → I = ε/R. 직렬이면 −IR1 − IR2 + ε = 0 → Req = R1 + R2.',
           '병렬에서는 각 가지에 같은 기전력이 걸리고 결합점 정리 I = I2 + I3로 1/Req = 1/R2 + 1/R3를 얻는다. 복합은 Req = R1 + (R2 R3)/(R2 + R3).',
@@ -192,7 +192,7 @@ export const quizDeep: Record<number, UnitQuizDeep> = {
       },
       {
         term: 'RC 충전',
-        summary: 'q = Cε(1 − e^(−t/RC)), V = ε(1 − e^(−t/RC)).',
+        summary: '충전 V=ε(1−e^(−t/τ)) · τ=RC',
         detail: [
           '충전 폐회로: ε − iR − q/C = 0. i = dq/dt와 초기조건 t = 0에서 q = 0을 쓰면 지수 충전해가 나온다.',
           't = 0+에는 콘덴서 전위차가 없어 저항 양단이 ε, 전류가 ε/R이다. 완전 충전 시 콘덴서 전위차 = ε, 전류 → 0.',
@@ -201,7 +201,7 @@ export const quizDeep: Record<number, UnitQuizDeep> = {
       },
       {
         term: 'RC 방전',
-        summary: 'q = q0 e^(−t/RC), q0 = Cε.',
+        summary: '방전 V=V0 e^(−t/τ) · q0=Cε',
         detail: [
           '방전은 ε = 0으로 두면 R(dq/dt) + q/C = 0이 된다. 전압도 V = V0 e^(−t/RC) 형태이다.',
           '시상수 τ = RC는 충전·방전 모두에서 지수 곡선의 시간 척도이다. RC의 차원이 시간인 이유는 지수가 무차원이어야 하기 때문이다.',
@@ -210,7 +210,7 @@ export const quizDeep: Record<number, UnitQuizDeep> = {
       },
       {
         term: '시상수 τ와 63%/37%',
-        summary: 't = τ에서 충전은 약 63%, 방전은 약 37%.',
+        summary: 't=τ → 충전≈63% · 방전≈37%',
         detail: [
           '충전: t = RC일 때 q/q_max = 1 − e^(−1) ≈ 0.632 (약 63%). 방전: q/q0 = e^(−1) ≈ 0.368 (약 37%).',
           '실험 정의로도 충전시간(사용전압의 63%까지)·방전시간(최대전압의 37%까지)을 τ로 잡는다. 기준이 ε인지 V0인지 헷갈리지 말 것.',
@@ -219,7 +219,7 @@ export const quizDeep: Record<number, UnitQuizDeep> = {
       },
       {
         term: '샘플링·장치 수치',
-        summary: 'Sampling Rate ≥ 100/τ. Vs는 0~5 V, 12단계(간격 5/12 V).',
+        summary: '샘플링≥100/τ · Vs 0~5V·12단',
         detail: [
           '장치 τ 조합이 0.005~0.3 s로 짧을 수 있어, 인터페이스 샘플링을 시상수 역수의 100배 이상으로 둔다.',
           '응용·확장에서는 Resolution, Sampling, Memory 개념과 오실로스코프/인터페이스의 한계를 묻는다. EXT로 R1을 1~10 kΩ 등으로 키워 τ를 늘릴 수도 있다.',
@@ -227,7 +227,7 @@ export const quizDeep: Record<number, UnitQuizDeep> = {
       },
       {
         term: '충전 전류 i(t)',
-        summary: 'i=(ε/R)e^(−t/RC). 콘덴서가 차면 전류→0.',
+        summary: 'i=(ε/R)e^(−t/τ) · 끝→i→0',
         detail: [
           '충전 폐회로에서 t=0+에는 콘덴서 전압 0 → 회로 전류 i=ε/R. 시간이 지나 q/C가 커지면 i는 지수적으로 감소한다.',
           '완전 충전 시 VC=ε, i→0. 퀴즈는 t=0 / 진행 중 / 완충 세 순간의 VR, VC, i를 표로 묻는 경우가 많다.',
@@ -236,7 +236,7 @@ export const quizDeep: Record<number, UnitQuizDeep> = {
       },
       {
         term: '결합점(절점) 법칙',
-        summary: '어떤 결합점에서도 유입 전류 합 = 유출 전류 합.',
+        summary: '유입 ΣI = 유출 ΣI',
         detail: [
           '폐회로 정리(고리)와 쌍을 이루는 키르히호프 법칙이다. 병렬에서 I=I2+I3를 쓸 때 필수.',
           '전하 보존: 결합점에 전하가 쌓이지 않으므로 들어온 전류와 나간 전류의 대수합은 0이다.',
@@ -299,7 +299,7 @@ export const quizDeep: Record<number, UnitQuizDeep> = {
     concepts: [
       {
         term: '브리지 평형',
-        summary: 'B와 D가 등전위이면 검류계 전류가 0이다.',
+        summary: 'VB=VD · Ig=0 · 평형',
         detail: [
           '네 저항 Rk, Rx, R1, R2를 다이아몬드로 연결하고 B–D에 검류계를 둔다. 전원은 A–C (실험장치 전형값 2 V).',
           '평형에서 R1과 R2에는 같은 전류 I1, Rk와 Rx에는 같은 전류 I2가 흐른다. VB = VD가 핵심 조건이다.',
@@ -307,7 +307,7 @@ export const quizDeep: Record<number, UnitQuizDeep> = {
       },
       {
         term: '미지저항 공식',
-        summary: 'Rx = (R2/R1) Rk. Rk와 비만 알면 된다.',
+        summary: 'Rx=(l₂/l₁)Rk · 비만 알면 됨',
         detail: [
           '평형에서 I1 R1 = I2 Rk, I1 R2 = I2 Rx. 두 식을 나누면 Rx = (R2/R1) Rk.',
           '균일 습동선이면 R ∝ l 이므로 R2/R1 = l2/l1. 전압비 VR2/VR1로도 동일하게 구한다.',
@@ -316,7 +316,7 @@ export const quizDeep: Record<number, UnitQuizDeep> = {
       },
       {
         term: '습동저항선',
-        summary: 'RV = (4ρ/(π φ²)) l. 장치 습동선 길이 10 cm.',
+        summary: 'RV∝l · 습동선 10 cm',
         detail: [
           '직경 φ, 비저항 ρ인 균일 원형 단면이면 A = π φ²/4 이고 RV = (4ρ/(π φ²)) l이다.',
           '검류계 과전류 시 경보음이 난다. 접점을 중앙 근처에 두고 Rk를 먼저 맞추는 것이 유리하다.',
@@ -325,7 +325,7 @@ export const quizDeep: Record<number, UnitQuizDeep> = {
       },
       {
         term: '민감도와 중앙',
-        summary: '가변저항(습동선) 중앙에서 민감도가 최대이다.',
+        summary: '중앙 · 민감도 최대',
         detail: [
           '응용·확장에서 가변저항 비율을 변수 a로 두고 민감도를 구하면, 중앙 근처에서 최댓값이 나온다.',
           '퀴즈·토론 단골: “왜 중앙이 유리한가?” → 민감도(Sensitivity) 최대.',
@@ -333,7 +333,7 @@ export const quizDeep: Record<number, UnitQuizDeep> = {
       },
       {
         term: '비저항과 재질 판별',
-        summary: 'ρ = RA/L. 표는 20 °C 기준.',
+        summary: 'ρ=RA/L · 표 20°C',
         detail: [
           '금속선을 최소 1 m 이상 Ext Rx에 연결해 R을 구한 뒤 ρ로 재질을 추정한다.',
           '대표값: Cu 1.68×10⁻⁸, Fe 1.00×10⁻⁷ Ω·m (20 °C). 도체 ~10⁻⁸, 합금·저항선 ~10⁻⁷~10⁻⁶, 절연체는 훨씬 크다.',
@@ -342,7 +342,7 @@ export const quizDeep: Record<number, UnitQuizDeep> = {
       },
       {
         term: '휘트스톤 vs 멀티미터',
-        summary: '브리지는 평형(영점) 비로 정밀 측정에 유리하다.',
+        summary: '영점법 · 정밀 측정',
         detail: [
           '휘트스톤은 평형점에서 작은 저항 변화도 평형점 이동으로 감지하도록 고안된 정밀저항 측정 회로이다.',
           '멀티미터는 내부 전류·전압으로 저항을 환산하는 방식이 일반적이다. 둘의 차이와 스트레인 게이지 등 실생활 예가 응용 문항이다.',
@@ -406,7 +406,7 @@ export const quizDeep: Record<number, UnitQuizDeep> = {
     concepts: [
       {
         term: '원형코일 축상 B',
-        summary: '비오–사바르로 구한 축상 자기장. 분모 (z²+a²)^(3/2).',
+        summary: '축상 B · (z²+a²)^(3/2)',
         detail: [
           '대칭축에서는 반지름 방향 성분이 상쇄되어 축 성분만 남는다. N번 감긴 얇은 원형 코일은 B(z) = (μ0 N i0 / 2) a²/(z²+a²)^(3/2).',
           '반경이 길이의 약 5배이면 유한 적분식과 원형코일 식의 차이가 최대 약 0.5%라는 실험서 비교 포인트가 있다.',
@@ -415,7 +415,7 @@ export const quizDeep: Record<number, UnitQuizDeep> = {
       },
       {
         term: '헬름홀츠 코일',
-        summary: '두 코일 간격 = 반지름 a → 중심 근처 균일장.',
+        summary: '간격=a · (4/5)^(3/2)μ₀NI/a',
         detail: [
           '동일한 반지름·감은수의 두 코일을 같은 축에 놓고 중심 간격을 a로 두면, 중점에서 B의 2차 도함수가 0이 되어 좁은 영역에서 비교적 균일한 장을 만든다.',
           '중심 B(0) = (4/5)^(3/2) μ0 N i0 / a ≈ 0.716 μ0 N i0 / a. a/5보다 작은 영역에서 중심값과의 차이는 약 0.2% 수준이다. 두 코일은 직렬·같은 방향 전류.',
@@ -424,7 +424,7 @@ export const quizDeep: Record<number, UnitQuizDeep> = {
       },
       {
         term: '유한·이상 솔레노이드',
-        summary: '유한: (cosα1+cosα2)/2, 무한 극한에서 → 1 → B=μ0 n i.',
+        summary: '유한 cosα · 이상 μ₀ni',
         detail: [
           '단위길이당 감은수 n = N/L. 유한 솔레노이드 축상 B(z) = μ0 n i0 (cosα1 + cosα2)/2. α1·α2는 측정점에서 코일 양 끝을 바라본 각이다.',
           '이상(무한) 솔레노이드는 앙페르 법칙으로 B = μ0 n i0, 외부 B≈0. L=10a이면 중심에서 이상식과 약 2% 차이난다.',
@@ -433,7 +433,7 @@ export const quizDeep: Record<number, UnitQuizDeep> = {
       },
       {
         term: '앙페르 법칙 경로',
-        summary: '직사각형 경로에서 내부 변만 Bh = μ0 (n h i0).',
+        summary: '앙페르 · 내부만 Bh',
         detail: [
           'bc·da는 B⊥dl로 기여 0, 외부 cd는 B=0, 내부 ab만 Bh가 남는다. 둘러싸인 전류는 n h i0이므로 B = μ0 n i0.',
           '실제 유한 솔레노이드라도 중심 부근에서는 이 식이 잘 맞는다.',
@@ -442,7 +442,7 @@ export const quizDeep: Record<number, UnitQuizDeep> = {
       },
       {
         term: '변압기 권선수비',
-        summary: '이상적으로 ε2/ε1 = N2/N1.',
+        summary: 'ε₂/ε₁=N₂/N₁ · 400:3200',
         detail: [
           '한 코일 자속 변화가 다른 코일에 유도기전력을 만든다. 누설 없으면 Φ1=Φ2=Φ이므로 ε ∝ N.',
           '실험서 전형 조건 개념: AC ≈5 V, ≈60 Hz, N1=400, N2=3200 → 이론 승압비 8. 렌츠 법칙상 2차 유도 자속은 1차 자속 변화를 방해하는 방향.',
@@ -451,7 +451,7 @@ export const quizDeep: Record<number, UnitQuizDeep> = {
       },
       {
         term: '코어의 역할',
-        summary: '상호유도↑, 누설 자속↓. 닫힌 자기회로가 유리.',
+        summary: '철심 · 상호유도↑ · 누설↓',
         detail: [
           '공심(에어)은 누설이 커 유도 기전력이 작다. 철심 삽입, U자(개방), ㅁ자(닫힌 가로대) 순으로 결합이 좋아지는 경향이 있다.',
           '성층(적층) 코어는 와전류 손실 억제용이라는 점이 응용 질문으로 연결된다. 균일장을 만드는 대표 예는 헬름홀츠와 긴 솔레노이드 중심이다.',
@@ -510,7 +510,7 @@ export const quizDeep: Record<number, UnitQuizDeep> = {
     concepts: [
       {
         term: '자화와 자화율',
-        summary: 'M은 단위부피당 자기모멘트. 선형이면 M = χm H.',
+        summary: 'M=χₘH · >0상자 · <0반자',
         detail: [
           '원자·분자 자기모멘트가 한 방향으로 정렬된 정도가 자화 M이다. 많은 물질에서 M과 H는 선형 관계이다.',
           '상자성은 χm>0(같은 방향), 반자성은 χm<0(반대), 강자성은 χm≫1이며 비선형·이력이 특징이다.',
@@ -519,7 +519,7 @@ export const quizDeep: Record<number, UnitQuizDeep> = {
       },
       {
         term: 'B–H와 투자율',
-        summary: '선형: B = μ H, μ = μ0(1+χm). 강자성은 상수 μ로 못 씀.',
+        summary: 'B=μH · 강자성=이력·비선형',
         detail: [
           '강자성체에서는 H를 바꿨을 때 B(또는 M)가 같은 경로를 되짚지 않는다. 이것이 이력(hysteresis, “뒤처짐”)이다.',
           '자화가 자기장 변화를 뒤따라가며, 포화 후 H→0으로 줄여도 원점으로 바로 돌아가지 않는다.',
@@ -528,7 +528,7 @@ export const quizDeep: Record<number, UnitQuizDeep> = {
       },
       {
         term: '잔류자기 Br · 보자력 Hc',
-        summary: 'Br은 B축 절편, Hc는 H축 절편(역방향 H).',
+        summary: 'Br=남는 B · Hc=B→0 역H',
         detail: [
           'Br(remanence): H=0일 때 남는 B. Hc(coercivity): B=0으로 만들 때 필요한 역방향 H의 크기.',
           '최대 H를 키우면 작은 루프가 커지다가 포화 루프에 수렴한다. Br과 Hc의 이름·축 위치를 절대 바꾸지 말 것.',
@@ -536,7 +536,7 @@ export const quizDeep: Record<number, UnitQuizDeep> = {
       },
       {
         term: '이력손실과 탈자',
-        summary: '폐곡선 면적 = 한 사이클당 에너지 손실. 탈자로 원점 복귀.',
+        summary: '면적=이력손실 · 탈자→원점',
         detail: [
           '이력 폐곡선 안쪽 면적에 해당하는 에너지가 한 주기마다 열 등으로 사라진다.',
           '탈자 방법: (1) 큐리온도 이상 가열 후 냉각 (2) 교류·역자장으로 루프 크기를 점점 줄여 원점 수렴. 재현성 있는 측정의 출발점이다.',
@@ -544,7 +544,7 @@ export const quizDeep: Record<number, UnitQuizDeep> = {
       },
       {
         term: '솔레노이드+철심의 B',
-        summary: 'B = B0 + BM = μ0 n i + BM.',
+        summary: 'B=B₀+Bₘ · B₀=μ₀ni',
         detail: [
           '공심이면 B0 = μ0 n i. 철심 삽입 시 원자 쌍극자 정렬 기여 BM이 더해진다. BM ∼ M ∼ B0.',
           '솔레노이드 자체 장을 무시할 수 있는 영역에서는 B ≅ BM. 퀴즈용 한 줄은 B = μ0 n i + BM.',
@@ -553,7 +553,7 @@ export const quizDeep: Record<number, UnitQuizDeep> = {
       },
       {
         term: '철심 이력 경로',
-        summary: 'a(원점)→b(포화)→c(잔류)→d(반대포화)→e → 폐곡선 bcdeb.',
+        summary: '원점→포화→Br→반대→폐곡선',
         detail: [
           '가로축을 B0(∝i), 세로축을 BM으로 두면 c점이 H=0에 해당하는 잔류이다.',
           '극성 선택 스위치로 +/−를 왕복해야 완전한 폐곡선이 나온다. 시료 2종 비교는 Br·Hc·면적 차이를 보기 위함이다.',
@@ -614,7 +614,7 @@ export const quizDeep: Record<number, UnitQuizDeep> = {
     concepts: [
       {
         term: '로런츠 힘',
-        summary: '움직이는 전하가 받는 자기력. 방향만 바꾸고 일하지 않는 힘의 전형.',
+        summary: 'F=q(v×B) · 방향만 · 일=0',
         detail: [
           'F = q(v×B). 크기는 qvB sinφ. 힘의 방향은 v와 B가 만드는 평면에 수직이다.',
           'SI에서 자기장 단위는 테슬라(T). 전류 도선은 움직이는 전하의 흐름이므로 같은 원리로 F = I(ℓ×B)가 된다.',
@@ -623,7 +623,7 @@ export const quizDeep: Record<number, UnitQuizDeep> = {
       },
       {
         term: 'F = BIl',
-        summary: 'B⊥I(또는 ℓ)일 때 도선이 받는 힘.',
+        summary: 'F=BIl · B⟂ℓ',
         detail: [
           '벡터 ℓ의 크기는 도선 길이, 방향은 전류 방향이다. 솔레노이드 중심처럼 B⊥I이면 F = BIl, 따라서 B = F/(Il).',
           '오른손 법칙과 sinφ를 함께 묻는다. 수직이 아니면 sinφ를 빼먹으면 안 된다.',
@@ -632,7 +632,7 @@ export const quizDeep: Record<number, UnitQuizDeep> = {
       },
       {
         term: '전류천칭 평형 Fd = mgs',
-        summary: '자기력 토크와 중력 토크를 맞춰 수평을 만든다.',
+        summary: 'Fd=mgs · B=mgs/(Idl)',
         detail: [
           '받침점에서 거리 d인 도선 구간에 자기력 F → 토크 Fd. 반대쪽 거리 s에 질량 m의 추 → 토크 mgs. 평형이면 Fd = mgs.',
           '대입하면 B = mgs/(I d l). 여기서 I는 천칭(도선) 전류, i는 솔레노이드 전류(이론 B=μ0 n i용)로 구분한다.',
@@ -641,7 +641,7 @@ export const quizDeep: Record<number, UnitQuizDeep> = {
       },
       {
         term: '유효 길이 l = 6가닥',
-        summary: 'bc 구간은 위 3 + 아래 3 = 총 6가닥 길이의 합.',
+        summary: 'l = bc 6가닥 합',
         detail: [
           '겉보기 한 가닥이 아니라 상·하 합 6가닥의 길이를 l로 잡는다. d는 평균값을 사용한다고 명시되어 있다.',
           '퀴즈: “l을 어떻게 잡는가?” → 6가닥 합.',
@@ -649,7 +649,7 @@ export const quizDeep: Record<number, UnitQuizDeep> = {
       },
       {
         term: '이론 B와 측정 B 비교',
-        summary: 'B이론 = μ0 (N/L) i솔레 vs B측정 = mgs/(Idl).',
+        summary: 'μ₀ni ↔ mgs/(Idl)',
         detail: [
           '솔레노이드 내부(특히 중심)에서 B는 균일하고 축에 평행하다고 실험서가 서술한다. 천칭으로 구한 B를 이 이론과 비교하는 것이 목표이다.',
           'n = N/L 계산 시 L 단위를 m로 통일한다. 장치 예: Φ 78 mm, L 120 mm, N=550.',
@@ -658,7 +658,7 @@ export const quizDeep: Record<number, UnitQuizDeep> = {
       },
       {
         term: '2CH 전원·장치 치수',
-        summary: 'CH1≈솔레노이드, CH2≈천칭+저항박스. L=240 mm, 도통부 30×6 mm.',
+        summary: 'CH1=솔레 · CH2=천칭+저항박스',
         detail: [
           '천칭을 전원에 직접 연결하지 않고 소비형 저항박스와 직렬한다. 솔레노이드 전류는 예로 ~2 A 고정 후 천칭 전류·추로 평형.',
           '장치: 솔레노이드 Φ 78 mm, L 120 mm, N=550. 추 예: 0.12 g, 0.15 g, 0.21 g. 측정 쉬는 동안 과열 방지를 위해 전원 OFF.',
@@ -666,7 +666,7 @@ export const quizDeep: Record<number, UnitQuizDeep> = {
       },
       {
         term: '와트밸런스와 IPK',
-        summary: '전류천칭 원리의 확장으로 질량을 상수 기반으로 정의.',
+        summary: '와트밸런스 · IPK→상수 정의',
         detail: [
           'IPK(국제 킬로그램 원기)는 파리의 물리 물체 정의라서 원기 질량이 변할 수 있어 SI가 불안정해진다.',
           '와트(키블) 밸런스는 mg와 전자기력을 정밀 평형시켜 질량을 전자기량·상수로 결정한다. 실험실 전류천칭이 질량 재정의로 확장된다는 응용 서술이 실험서에 직접 있다.',
@@ -726,7 +726,7 @@ export const quizDeep: Record<number, UnitQuizDeep> = {
     concepts: [
       {
         term: '교류와 위상차',
-        summary: '전압 최댓값 시각과 전류 최댓값 시각이 어긋난다.',
+        summary: 'V·I 위상 어긋남 · 리액턴스',
         detail: [
           '직렬 RLC에 ε = εM sin ωt를 걸면 전류는 i = iM sin(ωt+φ) 형태가 된다. ω = 2πf.',
           'DC와 다른 AC의 핵심이 바로 이 위상차 φ이다. εM·iM은 최댓값(peak)이다.',
@@ -735,7 +735,7 @@ export const quizDeep: Record<number, UnitQuizDeep> = {
       },
       {
         term: '리액턴스와 임피던스',
-        summary: 'XL∝f↑, XC∝1/f↓. Z는 AC에서의 “저항”에 대응.',
+        summary: 'XL∝f↑ · XC∝1/f · Z=√[R²+(XL−XC)²]',
         detail: [
           'XL = ωL = 2πfL, XC = 1/(ωC) = 1/(2πfC). εRM = R iM, εLM = XL iM, εCM = XC iM.',
           '위상이 다른 전압을 벡터(페이저)로 합하면 Z = √[R²+(XL−XC)²], φ = tan⁻¹((XL−XC)/R).',
@@ -744,7 +744,7 @@ export const quizDeep: Record<number, UnitQuizDeep> = {
       },
       {
         term: '소자별 위상',
-        summary: 'R 동위상, L은 V가 I보다 +90° 앞섬, C는 −90° 뒤짐.',
+        summary: 'R 동위상 · L +90° · C −90°',
         detail: [
           'εR는 전류와 동위상, εL은 +π/2, εC는 −π/2. 페이저에서 εR를 x축에 두면 L은 +y, C는 −y.',
           'XL>XC이면 유도성(φ>0, 전류가 전압보다 뒤짐), XL<XC이면 용량성, XL=XC이면 φ=0·Z=R.',
@@ -752,7 +752,7 @@ export const quizDeep: Record<number, UnitQuizDeep> = {
       },
       {
         term: '공진주파수',
-        summary: 'ω = 1/√(LC)일 때 전류 최대. f0 = 1/(2π√(LC)).',
+        summary: '공진 f₀=1/(2π√LC) · I·VR 최대',
         detail: [
           'XL=XC이면 Z 최소 → 회로 전류 최대. 전원과 저항 양단 전압이 동위상, VR(또는 I) 최대.',
           '오실로스코프 XY 모드 리사주: 위상차 있으면 타원, 동위상이면 직선 → 공진을 찾기 쉽다.',
@@ -761,7 +761,7 @@ export const quizDeep: Record<number, UnitQuizDeep> = {
       },
       {
         term: 'rms ↔ peak',
-        summary: '계기판 V·I는 rms. 이론 peak는 ×√2.',
+        summary: 'rms · peak=rms×√2',
         detail: [
           '사인파 기준 VM = Vrms × √2, IM = Irms × √2. Z = εM/iM을 쓸 때 rms를 그대로 peak처럼 쓰면 안 된다.',
           '장치 표시가 Vrms·mA(rms)인 점을 기억한다.',
@@ -770,7 +770,7 @@ export const quizDeep: Record<number, UnitQuizDeep> = {
       },
       {
         term: '실제 코일과 측정 주의',
-        summary: '코일 내부저항, 멀티미터 고주파 오차.',
+        summary: '코일 내부저항 · 고주파 오차',
         detail: [
           '실제 코일은 내부 저항이 있고, 인덕턴스가 클수록 내부저항도 커지는 경향이 있다. 해석 시 포함 여부를 판단한다.',
           '일반 멀티미터는 60 Hz 기준 교정이라 1 kHz 이상에서 오차가 커질 수 있다. 저항 양단을 CH2로 보면 전류와 동위상이라 전류 위상 관측에 유리하다.',
@@ -778,7 +778,7 @@ export const quizDeep: Record<number, UnitQuizDeep> = {
       },
       {
         term: 'OP AMP·Logger Pro (현장)',
-        summary: 'RLC 장치 OP AMP ≈×2. Logger Pro 0.01 s·10 kHz 샘플링.',
+        summary: 'OP AMP≈×2 · Logger 10 kHz',
         detail: [
           '함수발생기 Vpp와 회로에 실제 걸리는 Vs(증폭 후)를 구분한다. PPT 기준 Vs ≈ 2×Vinput.',
           '주파수 스윕 시 공진 근처(f0)를 촘촘히 잡고, Logger Pro 통계로 VR 최댓값·XY 리사주(직선=동위상)를 읽는다.',
@@ -840,7 +840,7 @@ export const quizDeep: Record<number, UnitQuizDeep> = {
     concepts: [
       {
         term: '스넬 법칙',
-        summary: 'n1 sin θ1 = n2 sin θ2. 각은 법선 기준.',
+        summary: 'n₁sinθ₁=n₂sinθ₂ · 법선 기준',
         detail: [
           'n은 매질 굴절률, θ는 경계면 법선과 광선이 이루는 각이다. 경계면과의 각과 혼동하지 말 것.',
           '소한 매질에서 밀한 매질로 진행할 때 경계에서 반사와 굴절이 동시에 일어난다.',
@@ -849,7 +849,7 @@ export const quizDeep: Record<number, UnitQuizDeep> = {
       },
       {
         term: '브루스터 각',
-        summary: '반사광과 굴절광이 서로 수직(90°)이 되는 입사각 θp.',
+        summary: 'θp+θ₂=90° · n=tanθp',
         detail: [
           '기하 조건 θp + θ2 = 90° → θ2 = 90° − θp. 스넬에 대입하면 n1 sin θp = n2 cos θp.',
           '정리하면 n2/n1 = tan θp. 공기에서는 n1≈1이므로 n2 = tan θp로 굴절률을 반사광만으로 구할 수 있다.',
@@ -858,7 +858,7 @@ export const quizDeep: Record<number, UnitQuizDeep> = {
       },
       {
         term: '편광과 반사',
-        summary: '브루스터에서 반사광은 입사면에 수직인 편광 성분만.',
+        summary: '반사광 = 입사면 수직 편광',
         detail: [
           '입사광은 입사면 평행·수직 성분을 모두 가질 수 있지만, 브루스터 각 반사광은 수직 성분만 남아 선형 편광이 된다.',
           '굴절광에는 두 성분이 섞일 수 있다. 그림에서 반사–굴절 사이가 직각으로 표시되는 것이 정의적 기하이다.',
@@ -866,7 +866,7 @@ export const quizDeep: Record<number, UnitQuizDeep> = {
       },
       {
         term: '편광 선글라스 응용',
-        summary: '도로 반사의 수평 편광을 수직 축 편광판으로 막는다.',
+        summary: '선글라스 축=수직 · 반사 차단',
         detail: [
           '수평면에 가까운 표면의 반사광은 브루스터 근처에서 수평 편광이 강하게 남는다. 선글라스 편광축을 수직으로 두면 눈부심이 줄어든다.',
           '확인법: 물·유리 반사를 보며 안경을 돌려 반사광이 최소가 되는 방위를 본다.',
@@ -874,7 +874,7 @@ export const quizDeep: Record<number, UnitQuizDeep> = {
       },
       {
         term: '측정·안전 포인트',
-        summary: '각은 법선 기준. 레이저 정면 응시 금지.',
+        summary: '법선 기준 · 레이저 주의',
         detail: [
           'θp 근처에서 편광판을 쓰면 레이저 빔이 거의 안 보일 수 있어, 위치 맞출 때만 0°로 보이게 한 뒤 원래 각으로 돌린다.',
           '조도 센서는 아날로그, 회전운동 센서는 디지털 채널. 프리즘·빔 각으로 계산값과 실측 위치를 대조하는 검증이 있다.',
@@ -882,7 +882,7 @@ export const quizDeep: Record<number, UnitQuizDeep> = {
       },
       {
         term: '측정 스캔·2θp 검증',
-        summary: '거친 스캔 5° 간격, θp 근처 2° 정밀. 2θp로 프리즘 배치 확인.',
+        summary: '5° 거친 · 2° 정밀 · 2θp 검증',
         detail: [
           '입사각을 ~5° 간격으로 넓게 스캔한 뒤, 예상 브루스터각 ±10° 구간은 2° 간격으로 촘촘히 측정한다.',
           'n=tan θp를 구한 뒤 2θp로 프리즘을 배치했을 때 빔 위치가 계산과 일치하는지 검증하는 절차가 실험서·현장 노트에 있다.',
@@ -941,7 +941,7 @@ export const quizDeep: Record<number, UnitQuizDeep> = {
     concepts: [
       {
         term: '회절',
-        summary: '좁은 틈을 지나면 틈이 새 구면파면의 출발점이 되어 빛이 퍼진다.',
+        summary: '틈=새 구면파 출발 · 퍼짐=회절',
         detail: [
           '평면파가 슬릿을 만나면 파면이 변형되고, 슬릿이 새로운 구면파면의 출발점이 된다. 그 파면에서 빛이 퍼져 나가는 현상이 회절이다.',
           '슬릿 폭 a↓ → 중앙 밝은 띠의 퍼짐 θ↑. 폭이 좁을수록 회절 무늬가 더 넓게 퍼진다.',
@@ -949,7 +949,7 @@ export const quizDeep: Record<number, UnitQuizDeep> = {
       },
       {
         term: '단일 슬릿 암점',
-        summary: '(a/2)sinθ = λ/2 → a sinθ = λ (1차).',
+        summary: '단일 암점 a sinθ=λ · 폭↓→무늬↑',
         detail: [
           '슬릿 중심과 가장자리에서 출발한 빛의 경로차로 위상차가 생긴다. 1차 암점 조건이 a sinθ = λ이다.',
           '일반화하면 m차 암점 a sinθ = mλ (m=±1,±2,…). 단일 무늬는 넓고 완만한 중심 + 어두운 띠(회절 포락선)이다.',
@@ -958,7 +958,7 @@ export const quizDeep: Record<number, UnitQuizDeep> = {
       },
       {
         term: '이중 슬릿(실험서)',
-        summary: 'a sinθ = λ/2 → λ = 2ay/D.',
+        summary: '실험서 λ=2ay/D · a=슬릿간격',
         detail: [
           '두 슬릿에서 나온 빛이 경로차·위상차에 따라 보강·상쇄한다. 실험서 식은 a sinθ = λ/2, θ가 작으면 sinθ ≈ y/D → λ = 2ay/D.',
           '여기서 a는 슬릿 간격(표준 교재의 d), y는 중앙부터 해당 무늬(명암 간격), D는 슬릿–스크린 거리이다.',
@@ -967,7 +967,7 @@ export const quizDeep: Record<number, UnitQuizDeep> = {
       },
       {
         term: '실험서 vs 표준 표기',
-        summary: 'y 정의가 다르면 계수 2가 생긴다. 본질은 같다.',
+        summary: '2ay/D ↔ dΔy/D · y 정의 확인',
         detail: [
           '표준: 슬릿 간격 d, 인접 밝은 띠 간격 Δy이면 λ = d Δy/D. Δy가 명암 간격 y의 약 2배이면 λ = 2ay/D와 동일하다.',
           '퀴즈에서는 실험서 표기 λ=2ay/D를 우선한다. “d와 밝은 띠 간격”으로 물으면 λ=d Δy/D.',
@@ -975,7 +975,7 @@ export const quizDeep: Record<number, UnitQuizDeep> = {
       },
       {
         term: '단일 vs 이중 무늬',
-        summary: '이중이 더 선명·조밀. 단일 회절이 포락선.',
+        summary: '이중=조밀·선명 · 단일=포락선',
         detail: [
           '단일: 넓고 성긴 회절 무늬. 이중: 보강·상쇄가 반복되어 더 뚜렷하고 조밀한 간섭 무늬.',
           '이중 간섭이 단일 슬릿 회절 포락선 안에 실리는 형태가 전형이다. 몇 개 무늬 평균·5회 반복이 측정 정확도에 유리하다.',
@@ -983,7 +983,7 @@ export const quizDeep: Record<number, UnitQuizDeep> = {
       },
       {
         term: '기준 파장·응용',
-        summary: '적색 레이저 636 nm. CD/DVD는 반사형 회절격자.',
+        summary: '기준 636 nm · CD/DVD 격자',
         detail: [
           '측정 파장을 636 nm와 비교해 오차%를 논한다. 녹색 레이저로 같은 방식 측정도 응용이다.',
           'CD/DVD를 반사형 회절격자로 쓰면 회절무늬 간격과 스크린(벽) 거리로 트랙(골) 간격을 추정할 수 있다.',
@@ -992,7 +992,7 @@ export const quizDeep: Record<number, UnitQuizDeep> = {
       },
       {
         term: '경로차·위상차',
-        summary: '두 파의 경로차가 λ/2(홀수)면 상쇄, λ(짝수)면 보강.',
+        summary: '경로차 λ→보강 · λ/2→상쇄',
         detail: [
           '중첩의 원리: 같은 점에서 두 파의 변위를 더한다. 위상차가 π(경로차 λ/2)면 상쇄, 2π(경로차 λ)면 보강.',
           '실험서 이중슬릿 조건 a sinθ=λ/2는 한 슬릿 대비 반 파장 경로차에 해당한다. y/D 근사는 소각(sinθ≈tanθ≈y/D)일 때만 쓴다.',
@@ -1000,7 +1000,7 @@ export const quizDeep: Record<number, UnitQuizDeep> = {
       },
       {
         term: '오차·반복 측정',
-        summary: 'y는 5회 반복 평균. 오차% = |λ실험−636|/636×100.',
+        summary: 'y 5회 평균 · 오차% vs 636 nm',
         detail: [
           '무늬 간격 y를 여러 번 재어 평균하면 λ=2ay/D의 분산을 줄일 수 있다. d(슬릿 간격)·D(슬릿–스크린)도 함께 기록한다.',
           '적색 레이저 이론값 636 nm와 비교해 상대오차를 논한다. 녹색 레이저·CD/DVD 회절은 응용(트랙 간격 추정) 주제로 연결된다.',
@@ -1060,7 +1060,7 @@ export const quizDeep: Record<number, UnitQuizDeep> = {
     concepts: [
       {
         term: '과학적 방법 순서',
-        summary: '이론적 고찰 → 좋은 가설 → 실험 → 가설 검증.',
+        summary: '이론→가설→실험→검증',
         detail: [
           '창의실험은 멋진 장치를 만드는 단원이 아니라, 학습한 전자기·광학으로 가설–검증을 수행하는 단원이다.',
           '이론을 정리한 뒤 검증 가능한 명제를 세우고, 그 명제를 가를 수 있게 측정을 설계한 다음 데이터로 지지/기각한다.',
@@ -1068,7 +1068,7 @@ export const quizDeep: Record<number, UnitQuizDeep> = {
       },
       {
         term: '좋은 가설',
-        summary: '앞 단원 개념에 근거하고, 관측으로 판별 가능해야 한다.',
+        summary: '이론 근거 · 측정으로 참/거짓',
         detail: [
           '예: “주파수 f를 올리면 저역통과 출력은 감소한다.”처럼 독립·종속 변수가 드러나야 한다.',
           '데이터를 먼저 보고 가설을 끼워 맞추는 순서에 가깝게 가지 말라는 것이 실험서 취지이다. 가설을 세운 뒤 실험한다.',
@@ -1076,7 +1076,7 @@ export const quizDeep: Record<number, UnitQuizDeep> = {
       },
       {
         term: '주제 예시의 의미',
-        summary: '허용되는 가설 종류의 표본이지, 주제 암기가 목적이 아니다.',
+        summary: '예시≠암기 · 가설 유형 참고',
         detail: [
           '무선 송신: 헬름홀츠 한쪽 송신·한쪽 수신, 유도 신호·모스 부호 열 전달 등을 검증.',
           '필터: 로우패스/하이패스의 주파수 특성을 이론 곡선과 비교. 광학: 프리즘·편광판·회절격자로 예측한 무늬/편광을 확인.',
@@ -1084,7 +1084,7 @@ export const quizDeep: Record<number, UnitQuizDeep> = {
       },
       {
         term: '지수 맞춤과 τ',
-        summary: 'V(t)=A e^(−Ct)+B에서 C_fit ≈ 1/τ.',
+        summary: 'Ae^(−Ct)+B · C≈1/τ',
         detail: [
           'Logger Pro 자연지수 맞춤이 RC 등에서 흔히 쓰인다. 이상적 RC의 e^(−t/τ)와 비교하면 C = 1/τ, 즉 τ = 1/C.',
           '맞춤 구간([ ] 범위)을 잘못 잡으면 A·C·B가 물리적으로 무의미해진다. “어느 구간의 어느 과정”을 맞추는지가 검증의 일부이다.',
@@ -1093,7 +1093,7 @@ export const quizDeep: Record<number, UnitQuizDeep> = {
       },
       {
         term: '독립·종속 변수',
-        summary: '가설은 “무엇을 바꾸면(독립) 무엇이 변하는가(종속)”가 드러나야 한다.',
+        summary: '독립변수 · 종속변수 명시',
         detail: [
           '예: 필터 실험 — 독립변수 f, 종속변수 |Vout/Vin|. RC 창의 — 독립 t 또는 R, 종속 V(t).',
           '데이터를 먼저 보고 가설을 맞추는 순서는 과학적 방법에 어긋난다. 이론 고찰 후 검증 가능한 명제를 세운다.',
@@ -1101,7 +1101,7 @@ export const quizDeep: Record<number, UnitQuizDeep> = {
       },
       {
         term: '필터·무선 검증량',
-        summary: '필터: |Vout/Vin| vs f를 이론 곡선과 비교. 무선: 수신 코일 유도 전압·모스 부호.',
+        summary: '필터: |Vout/Vin|–f · 무선: 유도',
         detail: [
           '로우패스/하이패스는 “회로를 만든다”가 목표가 아니라 주파수 응답이 이론과 일치하는지가 검증 포인트이다.',
           '무선 예시는 헬름홀츠 코일 송신·수신 분리, 1차 전류 변화가 2차에 유도 기전력을 만든다는 6·4단원 개념의 응용이다.',
@@ -1109,7 +1109,7 @@ export const quizDeep: Record<number, UnitQuizDeep> = {
       },
       {
         term: '보고서 필수 골격',
-        summary: '주제+이론 → 가설 → 설계 → 데이터 → 검증·결론.',
+        summary: '주제·가설·설계·데이터·검증',
         detail: [
           '실험서가 요구하는 논리 다섯 덩어리를 빠짐없이 말할 수 있어야 한다. Memo 페이지가 많은 것도 스스로 문서화하라는 단원 성격이다.',
           '필터 예시는 회로 “만들기”가 아니라 주파수 특성 vs 이론 비교가 목표라는 점을 강조한다.',
