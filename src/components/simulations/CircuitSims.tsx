@@ -397,7 +397,13 @@ export function OhmRCSim() {
           { id: 'discharge' as const, label: 'Part B 방전' },
         ]}
         value={mode}
-        onChange={(m) => { setMode(m); setT(0); setPlaying(false) }}
+        onChange={(m) => {
+          setMode(m)
+          setT(0)
+          setPlaying(false)
+          // Part B τ=RC는 단일 R·C — 직렬/병렬 Req가 τ에 섞이지 않게
+          if (m !== 'ohm') setCircuitType('single')
+        }}
       />
       <SimWorkbench
         figureRef="Fig.1"

@@ -474,20 +474,21 @@ export const units: Unit[] = [
       {
         id: 'b-from-balance',
         title: '전류천칭으로 B 역산',
-        description: '토크 평형 Fd = mgs에서 B를 구합니다.',
-        formula: 'B = mgs / (I · d · l)',
+        description: '토크 평형 Fd = mgs → F = mgs/d → B = F/(Il) = mgs/(Idl). d=받침↔도선, s=받침↔추, l=유효 도선길이(6가닥 합).',
+        formula: 'B = m g s / (I · d · l)',
         inputs: [
           { id: 'm', label: '질량 m', unit: 'g', defaultValue: 0.15, step: 0.01 },
-          { id: 'd', label: '팔 길이 d', unit: 'm', defaultValue: 0.1, step: 0.01 },
+          { id: 's', label: '추 팔 길이 s', unit: 'm', defaultValue: 0.2, step: 0.01 },
+          { id: 'd', label: '도선 팔 길이 d', unit: 'm', defaultValue: 0.1, step: 0.01 },
           { id: 'I', label: '전류 I', unit: 'A', defaultValue: 2, step: 0.1 },
-          { id: 'l', label: '도선 길이 l', unit: 'm', defaultValue: 0.05, step: 0.01 },
+          { id: 'l', label: '도선 길이 l (6가닥)', unit: 'm', defaultValue: 0.05, step: 0.01 },
         ],
         compute: (v) => {
           const m_kg = v.m * 1e-3
-          const F = m_kg * 9.81
-          const B = (F * v.d) / (v.I * v.l)
+          const F = (m_kg * 9.81 * v.s) / v.d
+          const B = F / (v.I * v.l)
           return {
-            F: { label: '자기력 F', value: F, unit: 'N' },
+            F: { label: '자기력 F (=mgs/d)', value: F, unit: 'N' },
             B: { label: '자기장 B', value: B, unit: 'T' },
             B_mT: { label: 'B', value: B * 1000, unit: 'mT' },
           }
@@ -680,26 +681,35 @@ export const units: Unit[] = [
     title: '영의 이중슬릿',
     englishTitle: "Young's Double Slit",
     week: 12,
-    summary: '단일·이중 슬릿 간섭 무늬로 빛의 파동성을 확인, λ = dy/D로 파장을 계산한다.',
+    summary: '단일·이중 슬릿 간섭 무늬로 빛의 파동성을 확인. 인접 밝은 띠면 λ=d·Δy/D, 실험서 명암간격이면 λ=2ay/D.',
     heroImage: img(9, 84),
     concepts: [
-      { term: '회절', description: '좁은 틈 → 파면 변형, 빛 확산' },
+      { term: '회절', description: '좁은 틈 → 새 구면파 출발점, 빛 확산' },
       { term: '단일 슬릿', description: 'a sin θ = λ (1차 암점)' },
-      { term: '이중 슬릿', description: 'λ = dy/D (소각 근사)' },
+      { term: '이중 슬릿', description: 'λ=d·Δy/D 또는 실험서 λ=2ay/D' },
       { term: '중첩', description: '경로차에 따라 보강·상쇄' },
       { term: '레이저', description: '적색 636 nm (비교 기준)' },
     ],
-    formulas: ['단일 슬릿: a sin θ = λ', '이중 슬릿: λ = dy/D', 'λ = 2ay/D (각도 근사에 따라)'],
+    formulas: [
+      '단일 슬릿: a sin θ = λ',
+      '이중(표준): λ = d · Δy / D',
+      '이중(실험서 명암간격): λ = 2 a y / D',
+    ],
     method: [
       'Part 1: 레이저-격자 거리 10cm, 단일/이중 슬릿 비교',
-      'Part 2: 슬릿 폭 0.04, 0.08, 0.16mm 단일 슬릿',
-      'Part 3: 이중 0.04mm/0.50mm, D 측정',
-      '밝은-어두운 간격 y, 5회 반복 평균',
-      'λ = dy/D → 636nm와 오차(%)',
+      'Part 2: 슬릿 폭 0.04, 0.08, 0.16mm 단일 슬릿 (좁을수록 무늬 넓어짐)',
+      'Part 3: 이중 슬릿 간격 d≈0.50mm, D 측정',
+      '인접 밝은 띠 간격 Δy(=y) 또는 실험서 명암간격, 5회 평균',
+      'λ = d·y/D (또는 2ay/D) → 636nm와 오차(%)',
     ],
     materials: ['적색 레이저 (636 nm)', '단일/이중 슬릿', '스크린', '자'],
     safety: ['레이저 정면 응시 금지', '안전 고글'],
-    quizChecks: ['λ = dy/D', '단일 vs 이중 무늬 차이', '슬릿 폭↑ → 무늬 넓어짐', '636 nm'],
+    quizChecks: [
+      '실험서: λ = 2ay/D (표준: λ = dΔy/D — y 정의 확인)',
+      '단일 vs 이중 무늬 차이',
+      '슬릿 폭↓ → 무늬 넓어짐',
+      '636 nm, y 5회 평균·오차%',
+    ],
     references: [
       { label: '영의 이중슬릿 — 위키백과', url: 'https://ko.wikipedia.org/wiki/%EC%98%81%EC%9D%98_%EC%9D%B4%EC%A4%91%EC%8A%AC%EB%A6%BF_%EC%8B%A4%ED%97%98' },
     ],
@@ -709,11 +719,11 @@ export const units: Unit[] = [
       {
         id: 'double-slit-lambda',
         title: '이중슬릿 파장',
-        description: '무늬 간격으로 파장 λ를 계산합니다.',
+        description: '인접 밝은 띠 간격 y(=Δy)일 때 λ=d·y/D. 실험서처럼 명암간격이면 y에 그 값을 넣고 결과를 2배로 해석하거나 λ=2ay/D를 쓰세요.',
         formula: 'λ = d · y / D',
         inputs: [
-          { id: 'd', label: '슬릿 간격 d', unit: 'mm', defaultValue: 0.5, step: 0.01 },
-          { id: 'y', label: '무늬 간격 y', unit: 'mm', defaultValue: 2, step: 0.1 },
+          { id: 'd', label: '슬릿 간격 d (실험서 a)', unit: 'mm', defaultValue: 0.5, step: 0.01 },
+          { id: 'y', label: '인접 밝은 띠 간격 Δy', unit: 'mm', defaultValue: 0.13, step: 0.01 },
           { id: 'D', label: '거리 D', unit: 'cm', defaultValue: 10, step: 0.5 },
         ],
         compute: (v) => {

@@ -32,11 +32,11 @@ function helmholtzB(N: number, i: number, a: number) {
   return Math.pow(4 / 5, 1.5) * MU0 * N * i / a
 }
 
-function solenoidB(n: number, i: number, z: number, L: number) {
+function solenoidB(n: number, i: number, z: number, L: number, radius = 0.0135) {
+  // cos α = 축방향거리 / √(R²+축²)  — atan2(R, 축)의 cos
   const half = L / 2
-  const a1 = Math.atan2(half - z, 0.0135)
-  const a2 = Math.atan2(half + z, 0.0135)
-  return MU0 * n * i * (Math.cos(a1) + Math.cos(a2)) / 2
+  const cosAlpha = (axial: number) => axial / Math.hypot(radius, axial)
+  return (MU0 * n * i * (cosAlpha(half - z) + cosAlpha(half + z))) / 2
 }
 
 export function MagneticFieldSim() {
@@ -50,13 +50,14 @@ export function MagneticFieldSim() {
   const [N1] = useState(400)
   const [N2] = useState(3200)
   const [core, setCore] = useState<CoreType>('air')
-  const [bLog, setBLog] = useState<{ z: number; b: number; bTheory: number }[]>([])
-  const [xfLog, setXfLog] = useState<{ core: string; e2: number }[]>([])
+  const [bLog, setBLog] = useState<{ z: number; b: number; bTheory: number; n: number; N: number; i: number; a_m: number }[]>([])
+  const [xfLog, setXfLog] = useState<{ core: string; e2: number; e1: number; N1: number; N2: number }[]>([])
   const [guidedStep, setGuidedStep] = useState(0)
   const graphRef = useRef<HTMLCanvasElement>(null)
   const setupRef = useRef<HTMLCanvasElement>(null)
 
-  const nDensity = 800 / length
+  // 실험서 솔레노이드 예: N≈800 — 슬라이더 N을 밀도에 반영
+  const nDensity = N / length
   const B =
     mode === 'circular'
       ? circularB(z, a, N, i)
@@ -199,20 +200,39 @@ export function MagneticFieldSim() {
       mode === 'circular'
         ? circularB(z, a, N, i)
         : mode === 'helmholtz'
-          ? helmholtzB(N, i, a) * Math.exp(-((z / a) ** 2) * 8)
+          ? helmholtzB(N, i, a)
           : solenoidB(nDensity, i, z, length)
-    setBLog((prev) => [...prev, { z: z * 100, b: B * 1000, bTheory: bTheory * 1000 }])
+    setBLog((prev) => [
+      ...prev,
+      { z: z * 100, b: B * 1000, bTheory: bTheory * 1000, n: nDensity, N, i, a_m: a },
+    ])
   }
 
   const recordTransformer = () => {
-    setXfLog((prev) => [...prev, { core, e2 }])
+    setXfLog((prev) => [...prev, { core, e2, e1, N1, N2 }])
   }
 
   const guidedSteps = [
-    { id: 'p1', label: '원형코일: z 1cm 간격 B(z) 측정', isComplete: () => bLog.length >= 3 && mode !== 'circular' },
-    { id: 'p2', label: '헬름홀츠: B(0) 측정', isComplete: () => mode === 'solenoid' || mode === 'transformer' },
-    { id: 'p3', label: '솔레노이드: 내부 B(z) 측정', isComplete: () => mode === 'transformer' },
-    { id: 'p4', label: '변압기: 4코어 ε₂ 비교', isComplete: () => xfLog.length >= 4 },
+    {
+      id: 'p1',
+      label: '원형코일: z 1cm 간격 B(z) 측정',
+      isComplete: () => mode === 'circular' && bLog.length >= 3,
+    },
+    {
+      id: 'p2',
+      label: '헬름홀츠: B(0) 측정',
+      isComplete: () => mode === 'helmholtz' && bLog.length >= 1,
+    },
+    {
+      id: 'p3',
+      label: '솔레노이드: 내부 B(z) 측정',
+      isComplete: () => mode === 'solenoid' && bLog.length >= 3,
+    },
+    {
+      id: 'p4',
+      label: '변압기: 4코어 ε₂ 비교',
+      isComplete: () => mode === 'transformer' && xfLog.length >= 4,
+    },
   ]
 
   const fieldLiveControls = (
@@ -267,7 +287,15 @@ export function MagneticFieldSim() {
               </button>
             ))}
           </div>
-          <SimSlider label="권수 N" value={N} min={50} max={200} step={10} unit="" onChange={setN} />
+          <SimSlider
+            label="권수 N"
+            value={N}
+            min={mode === 'solenoid' ? 100 : 50}
+            max={mode === 'solenoid' ? 800 : 200}
+            step={mode === 'solenoid' ? 50 : 10}
+            unit=""
+            onChange={setN}
+          />
           {mode === 'solenoid' && (
             <SimSlider label="솔레노이드 길이 L" value={length} min={0.05} max={0.12} step={0.005} unit=" m" onChange={setLength} />
           )}
@@ -348,8 +376,10 @@ export function MagneticFieldSim() {
               onClearAll={() => setBLog([])}
               calcMapping={
                 mode === 'solenoid'
-                  ? { 'solenoid-b': { n: 'b', i: 'bTheory' } }
-                  : { 'helmholtz-b': { N: 'b', i: 'bTheory', a: 'z' } }
+                  ? { 'solenoid-b': { n: 'n', i: 'i' } }
+                  : mode === 'helmholtz'
+                    ? { 'helmholtz-b': { N: 'N', i: 'i', a: 'a_m' } }
+                    : undefined
               }
               theoryValue={mode === 'helmholtz' ? helmholtzB(N, i, a) * 1000 : undefined}
               theoryLabel="B(0) 이론"
@@ -364,7 +394,7 @@ export function MagneticFieldSim() {
               rows={xfLog}
               onDeleteRow={(i) => setXfLog((p) => p.filter((_, j) => j !== i))}
               onClearAll={() => setXfLog([])}
-              calcMapping={{ transformer: { e1: 'e2', N1: 'e2', N2: 'e2' } }}
+              calcMapping={{ transformer: { e1: 'e1', N1: 'N1', N2: 'N2' } }}
             />
           )
         }
@@ -656,9 +686,9 @@ export function MagneticBalanceSim() {
   const [notch, setNotch] = useState(1)
   const [m, setM] = useState<number>(BALANCE_NOTCHES[1].massG)
   const [I, setI] = useState(1.5)
-  const [l] = useState(0.05)
+  const [l] = useState(0.05) // 실험서: bc 구간 6가닥 합
   const [resistorOn, setResistorOn] = useState(false)
-  const [log, setLog] = useState<{ notch: number; m: number; I: number; l: number; B: number }[]>([])
+  const [log, setLog] = useState<{ notch: number; m: number; I: number; l: number; d: number; s: number; B: number }[]>([])
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
   const notchPreset = BALANCE_NOTCHES[notch]
@@ -666,15 +696,19 @@ export function MagneticBalanceSim() {
   const solenoidL = 0.12
   const n = N / solenoidL
   const powerOn = resistorOn
+  // 캔버스 px → m (교육용 스케일): 받침↔도선 d, 받침↔추 s
+  const d = BALANCE_LAYOUT.solenoidOffsetX * 0.001
+  const s = notchPreset.hookBeamX * 0.001
   const B_true = powerOn ? MU0 * n * I : 0
   const F_mag = B_true * I * l
-  const F_weight = m * 1e-3 * 9.81
-  const I_balance = Math.sqrt((m * 1e-3 * 9.81) / (MU0 * n * l))
-  const balanced = powerOn && Math.abs(F_mag - F_weight) / F_weight < 0.04
-  const B_calc = (m * 1e-3 * 9.81) / (I * l)
+  const torqueMag = F_mag * d
+  const torqueWeight = m * 1e-3 * 9.81 * s
+  const I_balance = Math.sqrt((m * 1e-3 * 9.81 * s) / (MU0 * n * l * d))
+  const balanced = powerOn && Math.abs(torqueMag - torqueWeight) / torqueWeight < 0.04
+  const B_calc = (m * 1e-3 * 9.81 * s) / (I * d * l)
 
   const maxTilt = 0.3
-  const forceImbalance = powerOn ? (F_weight - F_mag) / F_weight : -1
+  const forceImbalance = powerOn ? (torqueWeight - torqueMag) / torqueWeight : -1
   const tilt = powerOn
     ? Math.max(-maxTilt, Math.min(maxTilt, forceImbalance * maxTilt))
     : -maxTilt * 0.45
@@ -777,7 +811,7 @@ export function MagneticBalanceSim() {
 
   const recordBalance = () => {
     if (!balanced) return
-    setLog((prev) => [...prev, { notch: notch + 1, m, I, l, B: B_calc * 1000 }])
+    setLog((prev) => [...prev, { notch: notch + 1, m, I, l, d, s, B: B_calc * 1000 }])
   }
 
   const balanceLiveControls = (
@@ -818,9 +852,11 @@ export function MagneticBalanceSim() {
   const balanceSetupControls = (
     <div className="space-y-3">
       <SimHint>
-        솔레노이드(N=550) 안 도선에 자기력 F=BIl이 작용합니다. 추를 걸어 토크 평형 BIl=mg가 되도록 I를 조절하고, 5개 홈에서 반복 측정해 B를 역산합니다.
+        솔레노이드(N=550) 안 도선에 F=BIl → 토크 평형 Fd = mgs. I를 조절해 수평을 맞추고 B = mgs/(Idl)로 역산합니다 (l=6가닥).
       </SimHint>
-      <p className="text-xs text-slate-500">도선 유효 길이 l = {l} m (6가닥 합) · 솔레노이드 전류는 천칭 I와 동일 회로</p>
+      <p className="text-xs text-slate-500">
+        l = {l} m (6가닥) · d = {(d * 100).toFixed(1)} cm · s = {(s * 100).toFixed(1)} cm · 솔레·천칭 동일 전류
+      </p>
     </div>
   )
 
@@ -842,12 +878,12 @@ export function MagneticBalanceSim() {
                 <strong className="text-slate-800">구조:</strong> 왼쪽 칼날 회전추 → 가운데 솔레노이드가 <strong>도선(빨강)</strong>만 감쌈 → 오른쪽 홈에 추
               </p>
               <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 font-mono text-[11px]">
-                <span>F<sub>mag</sub> = {(F_mag * 1000).toFixed(2)} mN</span>
-                <span>mg = {(F_weight * 1000).toFixed(2)} mN</span>
+                <span>Fd = {(torqueMag * 1000).toFixed(2)} mN·m</span>
+                <span>mgs = {(torqueWeight * 1000).toFixed(2)} mN·m</span>
                 {powerOn && !balanced && (
                   <span className="text-indigo-600">수평 목표 I ≈ {I_balance.toFixed(2)} A</span>
                 )}
-                {balanced && <span className="text-green-600">✓ 수평 (BIl = mg)</span>}
+                {balanced && <span className="text-green-600">✓ 수평 (Fd = mgs)</span>}
               </div>
             </div>
           </div>
@@ -866,12 +902,15 @@ export function MagneticBalanceSim() {
               { key: 'notch', label: '홈', unit: '' },
               { key: 'm', label: '추 질량 m', unit: 'g' },
               { key: 'I', label: '전류 I', unit: 'A' },
+              { key: 'd', label: 'd', unit: 'm', decimals: 3 },
+              { key: 's', label: 's', unit: 'm', decimals: 3 },
+              { key: 'l', label: 'l', unit: 'm', decimals: 3 },
               { key: 'B', label: 'B (역산)', unit: 'mT' },
             ]}
             rows={log}
             onDeleteRow={(i) => setLog((p) => p.filter((_, j) => j !== i))}
             onClearAll={() => setLog([])}
-            calcMapping={{ 'b-from-balance': { m: 'm', I: 'I', l: 'l', d: 'notch' } }}
+            calcMapping={{ 'b-from-balance': { m: 'm', I: 'I', l: 'l', d: 'd', s: 's' } }}
             theoryValue={MU0 * n * I * 1000}
             theoryLabel="μ₀ni"
           />
@@ -1145,17 +1184,18 @@ export function DoubleSlitSim() {
   const [d] = useState(0.5)
   const [a, setA] = useState(0.08)
   const [D, setDdist] = useState(10)
-  const [y, setY] = useState(2)
-  const [lambdaLog, setLambdaLog] = useState<{ y: number; D: number; lambda: number }[]>([])
+  const [y, setY] = useState(0.13)
+  const [lambdaLog, setLambdaLog] = useState<{ d: number; y: number; D: number; lambda: number }[]>([])
   const setupRef = useRef<HTMLCanvasElement>(null)
   const patternRef = useRef<HTMLCanvasElement>(null)
 
+  // 표준: λ = d·Δy/D. d=0.5mm, D=10cm, λ=636nm → Δy ≈ 0.127 mm
   const lambda = ((d * 1e-3) * (y * 1e-3)) / (D * 1e-2)
   const lambdaNm = lambda * 1e9
   const lamRef = 636e-9
 
   const recordLambda = () => {
-    setLambdaLog((prev) => [...prev, { y, D, lambda: lambdaNm }])
+    setLambdaLog((prev) => [...prev, { d, y, D, lambda: lambdaNm }])
   }
 
   useEffect(() => {
@@ -1268,7 +1308,7 @@ export function DoubleSlitSim() {
     <div className="space-y-3">
       {part === 'p3' && (
         <>
-          <SimSlider label="무늬 간격 y (눈금자)" value={y} min={0.5} max={5} step={0.1} unit=" mm" onChange={setY} />
+          <SimSlider label="인접 밝은 띠 Δy" value={y} min={0.05} max={0.5} step={0.01} unit=" mm" onChange={setY} />
           <SimSlider label="거리 D" value={D} min={5} max={30} step={0.5} unit=" cm" onChange={setDdist} />
           <button type="button" onClick={recordLambda} disabled={lambdaLog.length >= 5} className="w-full rounded-lg bg-[var(--color-accent)] py-3 text-sm text-white disabled:opacity-40 touch-manipulation">
             λ 측정 기록 ({lambdaLog.length}/5)
@@ -1284,8 +1324,8 @@ export function DoubleSlitSim() {
     <div className="space-y-3">
       <SimHint>
         {part === 'p1' && 'D=10cm 고정. 단일 슬릿(넓은 띠) vs 이중 슬릿(조밀 무늬) 비교'}
-        {part === 'p2' && '슬릿폭 0.04·0.08·0.16mm — 슬릿이 넓을수록 회절 무늬가 넓어집니다'}
-        {part === 'p3' && '스크린 눈금자로 y를 측정 → λ=dy/D. 5회 반복 후 평균과 636nm 오차를 확인합니다'}
+        {part === 'p2' && '슬릿폭 0.04·0.08·0.16mm — 슬릿이 좁을수록 회절 무늬가 더 넓게 퍼집니다'}
+        {part === 'p3' && '스크린에서 인접 밝은 띠 간격 Δy(=y) 측정 → λ=d·y/D. (실험서 명암간격이면 λ=2ay/D) 5회 평균·636nm 오차'}
       </SimHint>
       <SimModeTabs
         modes={[
@@ -1321,8 +1361,8 @@ export function DoubleSlitSim() {
   return (
     <SimShell
       title="영의 이중슬릿"
-      description="Part1 단일/이중 비교, Part2 슬릿폭 3종, Part3 λ=dy/D 5회 평균."
-      hint="레이저-격자 10cm. 스크린 눈금자로 y 측정."
+      description="Part1 단일/이중 비교, Part2 슬릿폭 3종, Part3 λ=d·Δy/D 5회 평균."
+      hint="레이저-격자 10cm. 스크린에서 인접 밝은 띠 간격 y 측정."
     >
       <SimWorkbench
         figureRef="Fig.9"
@@ -1336,7 +1376,7 @@ export function DoubleSlitSim() {
                 <canvas ref={patternRef} width={360} height={90} className="w-full touch-none" />
               </SimCanvas>
             </div>
-            <SimApparatusCaption structure="He-Ne 레이저 → 슬릿(단일/이중) → 거리 D 떨어진 스크린. 눈금자로 밝은 띠 간격 y를 측정해 λ=dy/D 계산.">
+            <SimApparatusCaption structure="He-Ne 레이저 → 슬릿(단일/이중) → 거리 D 스크린. 인접 밝은 띠 간격 y(=Δy)면 λ=d·y/D. 실험서 명암간격이면 λ=2ay/D (동일 물리).">
               <span>{mode === 'double' ? '이중 슬릿' : '단일 슬릿'}</span>
               <span>D = {D} cm</span>
               {part === 'p3' && <span>λ = {lambdaNm.toFixed(0)} nm</span>}
@@ -1346,7 +1386,7 @@ export function DoubleSlitSim() {
         instruments={
           part === 'p3' ? (
             <div className="rounded bg-[#0a1a0a] p-3 text-center font-mono text-[#33ff33]">
-              <p className="text-[10px] text-slate-400">λ = dy/D</p>
+              <p className="text-[10px] text-slate-400">λ = d·y/D</p>
               <p className="text-xl">{lambdaNm.toFixed(0)} nm</p>
             </div>
           ) : undefined
@@ -1358,6 +1398,7 @@ export function DoubleSlitSim() {
             <LabDataSheet
               title="λ 5회 측정"
               columns={[
+                { key: 'd', label: 'd', unit: 'mm' },
                 { key: 'y', label: 'y', unit: 'mm' },
                 { key: 'D', label: 'D', unit: 'cm' },
                 { key: 'lambda', label: 'λ', unit: 'nm' },
@@ -1365,7 +1406,7 @@ export function DoubleSlitSim() {
               rows={lambdaLog}
               onDeleteRow={(i) => setLambdaLog((p) => p.filter((_, j) => j !== i))}
               onClearAll={() => setLambdaLog([])}
-              calcMapping={{ 'double-slit-lambda': { d: 'y', y: 'y', D: 'D' } }}
+              calcMapping={{ 'double-slit-lambda': { d: 'd', y: 'y', D: 'D' } }}
               theoryValue={636}
               theoryLabel="636nm"
             />
@@ -1384,7 +1425,7 @@ export function DoubleSlitSim() {
               : part === 'p2'
                 ? [
                     { label: '슬릿폭 a', value: `${a} mm` },
-                    { label: '무늬', value: '슬릿 넓을수록 무늬 넓어짐' },
+                    { label: '무늬', value: '슬릿 좁을수록 무늬 넓어짐' },
                   ]
                 : [
                     { label: '모드', value: mode === 'double' ? '이중 슬릿' : '단일 슬릿' },

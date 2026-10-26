@@ -80,7 +80,7 @@ export function EquipotentialSim() {
     { id: 's1', label: '수조 수평·전극 연결·전원 인가', isComplete: () => true },
     { id: 's2', label: '고정 검침봉 A 위치 선정', isComplete: () => guidedStep >= 1 },
     { id: 's3', label: 'B 이동 → 검류계=0 → 좌표 기록 (10점+)', isComplete: () => recorded.length >= 10 },
-    { id: 's4', label: '등전위선 완성 후 A 변경·전극 5종 반복', isComplete: () => lineCount >= 1 && recorded.length >= 10 },
+    { id: 's4', label: '등전위선 완성 후 A 변경·전극 5종 반복', isComplete: () => lineCount >= 1 },
   ]
 
   const recordPoint = useCallback(() => {

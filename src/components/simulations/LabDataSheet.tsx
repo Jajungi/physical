@@ -56,9 +56,12 @@ export function LabDataSheet({
   const errorPct =
     theoryValue !== undefined && Object.keys(stats).length > 0
       ? (() => {
-          const firstKey = Object.keys(stats)[0]
-          const mean = stats[firstKey]?.mean
-          if (!mean || theoryValue === 0) return null
+          // λ·결과 열을 우선 (첫 열 y/D로 오차 계산하던 버그 방지)
+          const prefer =
+            columns.find((c) => /lambda|λ|rx|b\b|result|tau/i.test(c.key) || /λ|파장|Rx|결과/.test(c.label))
+              ?.key ?? Object.keys(stats)[0]
+          const mean = stats[prefer]?.mean ?? stats[Object.keys(stats)[0]]?.mean
+          if (mean === undefined || theoryValue === 0) return null
           return (Math.abs(mean - theoryValue) / Math.abs(theoryValue)) * 100
         })()
       : null

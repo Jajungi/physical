@@ -38,7 +38,8 @@ export function GuidedSteps({ steps, currentStep, onStepChange }: GuidedStepsPro
       <div className={`border-t border-slate-700 px-4 pb-4 ${open ? 'block' : 'hidden lg:block'}`}>
         <ol className="mt-3 space-y-2">
           {steps.map((step, i) => {
-            const done = step.isComplete?.() ?? i < currentStep
+            // 과거 단계만 완료 표시 — 전역 isComplete()가 미래 단계까지 ✓ 치던 버그 방지
+            const done = i < currentStep || (i === currentStep && !!step.isComplete?.())
             const active = i === currentStep
             return (
               <li
