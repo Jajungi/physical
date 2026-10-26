@@ -10,7 +10,7 @@
   --color-muted: #6b7280;
   --color-surface: #fafafa;
   --color-border: #e8e8ec;
-  --header-height: 96px;
+  --header-height: 100px;
 }
 
 @layer base {

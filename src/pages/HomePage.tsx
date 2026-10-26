@@ -6,58 +6,93 @@ import { units } from '../data/units'
 export function HomePage() {
   return (
     <div>
-      <section className="border-b border-[var(--color-border)] bg-white px-6 pt-14 pb-12">
-        <div className="mx-auto max-w-6xl">
-          <p className="text-sm font-medium tracking-widest text-[var(--color-accent)] uppercase">
+      {/* Hero */}
+      <section className="relative overflow-hidden px-6 pt-20 pb-16">
+        <div className="absolute inset-0 -z-10 bg-gradient-to-b from-[var(--color-accent-soft)] to-transparent" />
+        <div className="mx-auto max-w-4xl text-center">
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-sm font-medium tracking-widest text-[var(--color-accent)] uppercase"
+          >
             General Physics Lab II
-          </p>
-          <h1 className="mt-3 font-serif text-4xl font-bold tracking-tight md:text-5xl">전체 목차</h1>
-          <p className="mt-4 max-w-2xl leading-relaxed text-[var(--color-muted)]">
-            10개 단원의 개념·실험 방법·시뮬레이션·계산기·실험서 원문입니다. 퀴즈 공식·함정만 빠르게
-            보려면{' '}
-            <Link to="/quiz" className="font-medium text-[var(--color-accent)] underline-offset-2 hover:underline">
-              퀴즈
+          </motion.p>
+          <motion.h1
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="mt-4 font-serif text-5xl font-bold tracking-tight md:text-7xl"
+          >
+            일물실
+          </motion.h1>
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-[var(--color-muted)]"
+          >
+            전자기학 실험의 개념·공식·시뮬레이션·계산기·실험서 원문을 한곳에 모았습니다.
+            퀴즈는 실험 방법보다 <strong className="text-[var(--color-ink)]">실험서의 사소한 개념</strong>을
+            중심으로 대비하세요.
+          </motion.p>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            className="mt-8"
+          >
+            <Link
+              to="/quiz"
+              className="inline-flex items-center gap-2 rounded-2xl bg-[var(--color-accent)] px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:opacity-90"
+            >
+              퀴즈 한눈에 보기
+              <span aria-hidden>→</span>
             </Link>
-            로 가세요.
-          </p>
+          </motion.div>
         </div>
       </section>
 
-      <section className="mx-auto max-w-6xl px-6 py-12">
-        <div className="grid gap-4 sm:grid-cols-2">
+      {/* Unit cards */}
+      <section className="mx-auto max-w-6xl px-6 pb-24">
+        <div className="grid gap-6 md:grid-cols-2">
           {units.map((unit, i) => (
             <motion.div
               key={unit.id}
-              initial={{ opacity: 0, y: 16 }}
+              initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-40px' }}
-              transition={{ delay: Math.min(i * 0.04, 0.2) }}
+              viewport={{ once: true, margin: '-50px' }}
+              transition={{ delay: i * 0.05 }}
             >
               <Link
                 to={`/unit/${unit.slug}`}
-                className="group flex h-full gap-4 overflow-hidden rounded-2xl border border-[var(--color-border)] bg-white p-4 transition hover:border-[var(--color-accent)]/35 hover:shadow-md"
+                className="group flex overflow-hidden rounded-2xl border border-[var(--color-border)] bg-white shadow-sm transition hover:border-[var(--color-accent)]/30 hover:shadow-lg"
               >
-                <div className="relative h-24 w-20 shrink-0 overflow-hidden rounded-xl bg-[var(--color-surface)] sm:h-28 sm:w-24">
+                <div className="relative w-32 shrink-0 overflow-hidden md:w-40">
                   <ImageWithFallback
                     src={unit.heroImage}
-                    alt=""
+                    alt={unit.title}
                     unitNumber={unit.id}
-                    fallbackLabel={String(unit.id)}
+                    fallbackLabel={unit.title}
                     className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
                   />
-                  <span className="absolute top-2 left-2 flex h-7 w-7 items-center justify-center rounded-md bg-white/95 text-xs font-bold text-[var(--color-accent)]">
+                  <div className="absolute inset-0 bg-[var(--color-accent)]/10" />
+                  <span className="absolute top-3 left-3 flex h-8 w-8 items-center justify-center rounded-lg bg-white/90 text-sm font-bold text-[var(--color-accent)]">
                     {unit.id}
                   </span>
                 </div>
-                <div className="min-w-0 flex-1 py-0.5">
-                  {unit.week && (
-                    <p className="text-xs text-[var(--color-muted)]">Week {unit.week}</p>
-                  )}
-                  <h2 className="mt-0.5 text-lg font-semibold tracking-tight group-hover:text-[var(--color-accent)]">
+                <div className="flex flex-1 flex-col justify-center p-5 md:p-6">
+                  <p className="text-xs font-medium tracking-wide text-[var(--color-muted)] uppercase">
+                    {unit.englishTitle}
+                    {unit.week && <span className="ml-2">· Week {unit.week}</span>}
+                  </p>
+                  <h2 className="mt-1 text-xl font-semibold tracking-tight group-hover:text-[var(--color-accent)]">
                     {unit.title}
                   </h2>
-                  <p className="mt-1 line-clamp-2 text-sm leading-relaxed text-[var(--color-muted)]">
+                  <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-[var(--color-muted)]">
                     {unit.summary}
+                  </p>
+                  <p className="mt-3 text-xs font-medium text-[var(--color-accent)]">
+                    {unit.calculators.length}개 계산기 →
                   </p>
                 </div>
               </Link>
