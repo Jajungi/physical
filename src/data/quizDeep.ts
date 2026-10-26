@@ -1028,6 +1028,7 @@ export const quizDeep: Record<number, UnitQuizDeep> = {
   },
 }
 
+/** 퀴즈 한눈 공식은 PlainFormula(유니코드)로 렌더 — KaTeX/한글 혼합 금지 */
 export const quizCheatSheet: {
   unit: number
   title: string
@@ -1040,9 +1041,9 @@ export const quizCheatSheet: {
     formulas: [
       'E = F/q',
       'V = −∫ E·dl',
-      'E = −(dV/dl) n  (n ⟂ 등전위선)',
-      '등전위선 따라 일 = 0 → 접선 E = 0 → E ⟂ 등전위',
-      '|E| ≈ |ΔV/Δl|',
+      'E = −(dV/dl) n   (n ⟂ 등전위선)',
+      '등전위선 따라 일 = 0  →  접선 E = 0',
+      '|E| ≈ |ΔV / Δl|',
     ],
     traps: [
       '전위 = 단위전하당 위치에너지',
@@ -1056,16 +1057,16 @@ export const quizCheatSheet: {
     unit: 2,
     title: '옴의 법칙·직류 RC',
     formulas: [
-      'V = IR , P = IV = I²R',
-      'Req(직렬)=ΣR , 1/Req(병렬)=Σ(1/R)',
-      '충전 V=ε(1−e^(−t/RC)) , 방전 V=V0 e^(−t/RC)',
-      'τ = RC',
-      't=τ → 충전 ≈63% of ε , 방전 ≈37% of V0',
+      'V = IR ,  P = IV = I²R',
+      'Req(직렬) = ΣR ,  1/Req(병렬) = Σ(1/R)',
+      '충전: V = ε(1 − e^(−t/RC))',
+      '방전: V = V0 e^(−t/RC)',
+      'τ = RC   ·   t=τ → 충전≈63%, 방전≈37%',
     ],
     traps: [
       '옴의 법칙은 V–I 직선일 때',
       '폐회로 전위 변화 대수합 = 0',
-      'τ % 기준: 충전 ε / 방전 V0',
+      'τ % 기준: 충전은 ε, 방전은 V0',
       '샘플링 ≥ 100/τ',
       'V–I 기울기 = R',
     ],
@@ -1074,9 +1075,9 @@ export const quizCheatSheet: {
     unit: 3,
     title: '휘트스톤 브리지',
     formulas: [
-      '평형: VB=VD → Ig=0',
+      '평형: VB = VD  →  Ig = 0',
       'Rx = (R2/R1) Rk = (l2/l1) Rk',
-      'RV = (4ρ/(π φ²)) l',
+      'RV = (4ρ / (π φ²)) l',
       'ρ = R A / L',
     ],
     traps: [
@@ -1091,17 +1092,17 @@ export const quizCheatSheet: {
     unit: 4,
     title: '솔레노이드·변압기',
     formulas: [
-      '원형: B(z)=(μ0 N I /2) a²/(z²+a²)^(3/2)',
-      '헬름홀츠: B(0)=(4/5)^(3/2) μ0 N I / a  (간격=a)',
-      '유한 솔레: B=μ0 n I (cosα1+cosα2)/2',
-      '이상 솔레: B≈μ0 n I',
+      '원형: B(z) = (μ0 N I / 2) · a²/(z²+a²)^(3/2)',
+      '헬름홀츠: B(0) = (4/5)^(3/2) · μ0 N I / a  (간격=a)',
+      '유한 솔레: B = μ0 n I (cosα1 + cosα2)/2',
+      '이상 솔레: B ≈ μ0 n I',
       '변압기: ε2/ε1 = N2/N1',
     ],
     traps: [
       '헬름홀츠 간격 = 반지름 a',
       '(4/5)^(3/2) ≈ 0.716',
       '유한 cosα vs 헬름홀츠 식 혼동',
-      'μ0=4π×10⁻⁷',
+      'μ0 = 4π×10⁻⁷',
       '철심 → 누설↓·상호유도↑',
     ],
   },
@@ -1110,10 +1111,10 @@ export const quizCheatSheet: {
     title: '자기이력곡선',
     formulas: [
       'M = χm H',
-      'B = μ H = μ0(1+χm)H',
-      'B0 = μ0 n i , B = B0 + BM',
-      'Br: H→0 때 남는 B / Hc: B→0 만드는 역방향 H',
-      '이력손실 ∝ 폐곡선 면적',
+      'B = μ H = μ0 (1+χm) H',
+      'B0 = μ0 n i ,  B = B0 + BM',
+      'Br: H→0 때 남는 B',
+      'Hc: B→0 만드는 역방향 H  ·  손실 ∝ 면적',
     ],
     traps: [
       'χm>0 상자성 / <0 반자성 / 강자성=이력',
@@ -1127,15 +1128,15 @@ export const quizCheatSheet: {
     unit: 6,
     title: '전류천칭',
     formulas: [
-      'F = q(v×B) → F = I(ℓ×B) → F=BIl (B⊥ℓ)',
-      'Fd = mgs → B = mgs/(I d l)',
+      'F = q(v×B) → I(l×B) → F = B I l  (B⊥l)',
+      'F d = m g s  →  B = m g s / (I d l)',
       'B0 = μ0 n Is',
-      'l = bc 6가닥 합',
+      'l = bc 구간 6가닥 합',
     ],
     traps: [
       '오른손·sinφ',
       'Fd=mgs (d와 s 구분)',
-      'l=6가닥',
+      'l = 6가닥',
       '저항박스 직렬',
       '와트밸런스·IPK 질량 재정의',
     ],
@@ -1144,28 +1145,28 @@ export const quizCheatSheet: {
     unit: 7,
     title: '교류 RLC',
     formulas: [
-      'XL=2πfL , XC=1/(2πfC)',
-      'Z=√[R²+(XL−XC)²]',
-      'φ=tan⁻¹((XL−XC)/R)',
-      'f0=1/(2π√(LC))',
+      'XL = 2π f L ,  XC = 1/(2π f C)',
+      'Z = √[ R² + (XL − XC)² ]',
+      'φ = tan⁻¹( (XL − XC)/R )',
+      'f0 = 1 / (2π √(L C) )',
       'peak = rms × √2',
     ],
     traps: [
       'R 동위상 / L +90° / C −90°',
       'XL∝f↑, XC∝1/f↓',
       '공진: VR·I 최대·동위상·리사주 직선',
-      'Z=εM/iM',
-      'rms↔peak 환산',
+      'Z = εM / iM',
+      'rms ↔ peak 환산',
     ],
   },
   {
     unit: 8,
     title: '브루스터각',
     formulas: [
-      'n1 sinθ1 = n2 sinθ2',
+      'n1 sin θ1 = n2 sin θ2',
       'θp + θ2 = 90°',
-      'n2/n1 = tan θp',
-      '공기: n = tan θp',
+      'n2 / n1 = tan θp',
+      '공기(n1≈1): n = tan θp',
     ],
     traps: [
       '반사광 ⟂ 굴절광',
@@ -1179,10 +1180,10 @@ export const quizCheatSheet: {
     unit: 9,
     title: '영의 이중슬릿',
     formulas: [
-      '단일 암점: a sinθ = λ',
-      '이중(실험서): λ = 2a sinθ ≈ 2ay/D',
-      '표준: λ = d Δy/D',
-      '적색 레이저: 636 nm',
+      '단일 암점: a sin θ = λ',
+      '이중(실험서): λ = 2 a sin θ ≈ 2 a y / D',
+      '표준: λ = d Δy / D',
+      '적색 레이저 기준: 636 nm',
     ],
     traps: [
       '실험서 a,y,D → 2ay/D',
@@ -1197,7 +1198,7 @@ export const quizCheatSheet: {
     title: '창의실험',
     formulas: [
       '이론 → 가설 → 실험 → 가설 검증',
-      'V = A e^(−Ct) + B',
+      'V = A e^(−C t) + B',
       'C ≈ 1/τ  →  τ ≈ 1/C',
     ],
     traps: [

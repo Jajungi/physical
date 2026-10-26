@@ -1,71 +1,81 @@
 import { Link } from 'react-router-dom'
-import { FormulaBlock } from '../components/FormulaBlock'
+import { PlainFormula } from '../components/PlainFormula'
 import { quizCheatSheet } from '../data/quizDeep'
 import { units } from '../data/units'
 
 export function QuizPage() {
   return (
-    <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6">
-      <header className="mb-12">
-        <p className="text-sm font-medium tracking-widest text-[var(--color-accent)] uppercase">
-          Quiz Prep
-        </p>
-        <h1 className="mt-2 font-serif text-4xl font-bold tracking-tight md:text-5xl">
-          퀴즈 한눈에
-        </h1>
-        <p className="mt-4 max-w-2xl leading-relaxed text-[var(--color-muted)]">
-          실험 방법보다 실험서에 적힌 <strong className="text-[var(--color-ink)]">개념·공식·사소한 문장</strong>을
-          모았습니다. 약한 단원은 카드에서 단원 페이지로 들어가 시각화·자세한 설명을 보세요.
-        </p>
-      </header>
+    <div>
+      <section className="border-b border-[var(--color-border)] bg-white px-6 pt-14 pb-12">
+        <div className="mx-auto max-w-6xl">
+          <p className="text-sm font-medium tracking-widest text-[var(--color-accent)] uppercase">
+            Quiz Prep
+          </p>
+          <h1 className="mt-3 font-serif text-4xl font-bold tracking-tight md:text-5xl">퀴즈 한눈에</h1>
+          <p className="mt-4 max-w-2xl leading-relaxed text-[var(--color-muted)]">
+            실험서에 적힌 <strong className="font-medium text-[var(--color-ink)]">공식·사소한 개념</strong>만
+            모았습니다. 자세한 설명·시각화는 각 단원 «자세히»로 들어가세요.
+          </p>
 
-      <section className="mb-14 space-y-4">
+          <div className="mt-6 flex flex-wrap gap-2">
+            {quizCheatSheet.map((row) => (
+              <a
+                key={row.unit}
+                href={`#u${row.unit}`}
+                className="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--color-surface)] text-sm font-semibold text-[var(--color-muted)] ring-1 ring-[var(--color-border)] hover:text-[var(--color-accent)]"
+              >
+                {row.unit}
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-6xl space-y-5 px-6 py-12">
         {quizCheatSheet.map((row) => {
           const unit = units.find((u) => u.id === row.unit)
           return (
             <article
               key={row.unit}
-              className="overflow-hidden rounded-2xl border border-[var(--color-border)] bg-white"
+              id={`u${row.unit}`}
+              className="scroll-mt-[calc(var(--header-height)+16px)] rounded-2xl border border-[var(--color-border)] bg-white"
             >
-              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[var(--color-border)] bg-[var(--color-surface)] px-5 py-3">
-                <h2 className="font-semibold">
-                  <span className="text-[var(--color-accent)]">{row.unit}단원</span>{' '}
-                  {row.title}
+              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[var(--color-border)] px-5 py-4">
+                <h2 className="text-lg font-semibold">
+                  <span className="text-[var(--color-accent)]">{row.unit}.</span> {row.title}
                 </h2>
                 {unit && (
                   <Link
                     to={`/unit/${unit.slug}#concepts`}
-                    className="text-sm font-medium text-[var(--color-accent)] hover:underline"
+                    className="shrink-0 text-sm font-medium text-[var(--color-accent)] hover:underline"
                   >
-                    자세히 →
+                    단원 페이지 →
                   </Link>
                 )}
               </div>
-              <div className="grid gap-4 p-5 md:grid-cols-2">
+
+              <div className="grid gap-6 p-5 lg:grid-cols-2">
                 <div>
-                  <p className="mb-2 text-xs font-semibold tracking-wide text-[var(--color-muted)] uppercase">
+                  <p className="mb-3 text-xs font-semibold tracking-wide text-[var(--color-muted)] uppercase">
                     공식
                   </p>
                   <ul className="space-y-2">
                     {row.formulas.map((f) => (
-                      <li
-                        key={f}
-                        className="overflow-x-auto rounded-lg bg-[var(--color-surface)] px-3 py-2"
-                      >
-                        <FormulaBlock formula={f} />
+                      <li key={f}>
+                        <PlainFormula text={f} />
                       </li>
                     ))}
                   </ul>
                 </div>
                 <div>
-                  <p className="mb-2 text-xs font-semibold tracking-wide text-amber-700 uppercase">
-                    함정·사소한 포인트
+                  <p className="mb-3 text-xs font-semibold tracking-wide text-amber-800 uppercase">
+                    함정 · 사소한 포인트
                   </p>
-                  <ul className="space-y-1.5">
+                  <ul className="space-y-2">
                     {row.traps.map((t) => (
                       <li
                         key={t}
-                        className="rounded-lg bg-amber-50 px-3 py-2 text-sm leading-relaxed text-amber-900"
+                        className="rounded-lg border border-amber-100 bg-amber-50/80 px-3 py-2 text-sm leading-relaxed text-amber-950"
                       >
                         {t}
                       </li>
@@ -77,10 +87,6 @@ export function QuizPage() {
           )
         })}
       </section>
-
-      <p className="text-center text-sm text-[var(--color-muted)]">
-        LMS·교수 공지가 우선입니다.
-      </p>
     </div>
   )
 }
