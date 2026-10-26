@@ -31,9 +31,24 @@ export function HomePage() {
             transition={{ delay: 0.2 }}
             className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-[var(--color-muted)]"
           >
-            전자기학 실험의 개념, 실험 방법, 참고자료, 실험서 원문을 위키처럼 정리했습니다.
-            실험 중 측정값을 바로 넣어볼 수 있는 계산기도 단원별로 준비되어 있습니다.
+            전자기학 실험의 개념·공식·시뮬레이션·계산기·실험서 원문을 한곳에 모았습니다.
+            퀴즈는 실험 방법보다 <strong className="text-[var(--color-ink)]">실험서의 사소한 개념</strong>을
+            중심으로 대비하세요.
           </motion.p>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            className="mt-8"
+          >
+            <Link
+              to="/quiz"
+              className="inline-flex items-center gap-2 rounded-2xl bg-[var(--color-accent)] px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:opacity-90"
+            >
+              퀴즈 한눈에 보기
+              <span aria-hidden>→</span>
+            </Link>
+          </motion.div>
         </div>
       </section>
 

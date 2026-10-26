@@ -5,29 +5,42 @@ import { units } from '../data/units'
 export function Layout() {
   const location = useLocation()
   const isHome = location.pathname === '/'
+  const isQuiz = location.pathname === '/quiz' || location.pathname.endsWith('/quiz')
   const currentSlug = location.pathname.startsWith('/unit/')
-    ? location.pathname.replace('/unit/', '')
+    ? location.pathname.replace(/^.*\/unit\//, '')
     : null
 
   return (
     <div className="min-h-screen">
       <header className="sticky top-0 z-50 border-b border-[var(--color-border)]/60 bg-[var(--color-surface)]/95 backdrop-blur-xl">
         {/* Top row */}
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:px-6">
+        <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-3 sm:px-6">
           <Link to="/" className="group flex shrink-0 items-center">
             <Logo size={38} />
           </Link>
 
-          <Link
-            to="/"
-            className={`shrink-0 rounded-xl px-4 py-2 text-sm font-medium transition ${
-              isHome
-                ? 'bg-[var(--color-accent)] text-white'
-                : 'border border-[var(--color-border)] bg-white hover:border-[var(--color-accent)]/40'
-            }`}
-          >
-            전체 목차
-          </Link>
+          <div className="flex shrink-0 items-center gap-2">
+            <Link
+              to="/quiz"
+              className={`rounded-xl px-4 py-2 text-sm font-medium transition ${
+                isQuiz
+                  ? 'bg-[var(--color-accent)] text-white'
+                  : 'border border-[var(--color-border)] bg-white hover:border-[var(--color-accent)]/40'
+              }`}
+            >
+              퀴즈 한눈에
+            </Link>
+            <Link
+              to="/"
+              className={`rounded-xl px-4 py-2 text-sm font-medium transition ${
+                isHome
+                  ? 'bg-[var(--color-accent)] text-white'
+                  : 'border border-[var(--color-border)] bg-white hover:border-[var(--color-accent)]/40'
+              }`}
+            >
+              전체 목차
+            </Link>
+          </div>
         </div>
 
         {/* Unit navigation — all 10 units */}

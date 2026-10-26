@@ -554,8 +554,8 @@ export function HysteresisSim() {
     <div className="space-y-3">
       <SimHint>
         {phase === 'linear'
-          ? '철심 없이 I를 0~3A 15단으로 올리며 (I,B)를 기록 → I-B 직선 관계 확인'
-          : '[전류 스윕]으로 0→max→−max→0 이력 폐곡선을 그립니다. Br·Hc 자동 판독.'}
+          ? '철심 없이 셀렉터 0→15→0 (Positive, 이어서 Negative). 눈금이 안정된 뒤 I·가우스를 적어 직선인지 확인'
+          : '탈자 시료를 센서에 밀착한 뒤 Positive부터 같은 왕복. 그래프 중에는 current OFF. Br·Hc 자동 판독.'}
       </SimHint>
       <SimModeTabs
         modes={[
@@ -570,9 +570,9 @@ export function HysteresisSim() {
 
   return (
     <SimShell
-      title="자기이력곡선 (B-H)"
-      description="15단 전류 스텝 I-B 선형 → 탈자 시료 삽입 후 이력 폐곡선. Br/Hc 자동 판독."
-      hint="가우스미터 2000G. 측정 후 즉시 스위치 OFF."
+      title="자기이력곡선 (전류–가우스)"
+      description="철심 없이 0~3 A·15단 왕복으로 선형성을 본 뒤, 탈자 시료의 이력 루프를 그립니다."
+      hint="가우스 range 2000 G, 영점 0 G. 각 단에서 눈금 안정 후 기록. 그래프 중 current OFF."
     >
       <SimWorkbench
         figureRef="Fig.5"
@@ -587,8 +587,8 @@ export function HysteresisSim() {
             <SimApparatusCaption
               structure={
                 phase === 'linear'
-                  ? '솔레노이드에 전류 I를 15단으로 올리며 가우스미터로 B 측정 → I-B 선형 관계 확인.'
-                  : '탈자 시료 링을 솔레노이드에 삽입. 전류 0→max→−max→0 스윕으로 B-H 이력 폐곡선.'
+                  ? '센서만 솔레노이드 안. Positive 0→15→0 후 Negative 왕복 → 전류–가우스 직선.'
+                  : '탈자 시료를 밀대로 센서에 밀착. Positive부터 같은 왕복으로 이력 폐곡선.'
               }
             >
               <span>I = {I.toFixed(2)} A</span>
